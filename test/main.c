@@ -11,9 +11,15 @@ int main(void) {
     if (event.kind != WinxEventKindNone) {
       if (event.kind == WinxEventKindQuit) {
         break;
-      } else if (event.kind == WinxEventKindKeyPress) {
+      } else if (event.kind == WinxEventKindKeyPress &&
+                 event.as.key_press._char != 0) {
+        INFO("Pressed\n");
         wputc(event.as.key_press._char, stdout);
-        putc('\n', stdout);
+        printf(":%u\n", event.as.key_press._char);
+        //putc('\n', stdout);
+      } else if (event.kind == WinxEventKindKeyRelease &&
+                 event.as.key_release._char != 0) {
+        INFO("Released\n");
       }
     }
   }

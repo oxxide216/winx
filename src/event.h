@@ -21,13 +21,13 @@ typedef enum {
 typedef u32 WChar;
 
 typedef struct {
-  KeyCode key_code;
-  WChar   _char;
+  WinxKeyCode key_code;
+  WChar       _char;
 } WinxEventKeyPress;
 
 typedef struct {
-  KeyCode key_code;
-  WChar   _char;
+  WinxKeyCode key_code;
+  WChar       _char;
 } WinxEventKeyRelease;
 
 typedef enum {
