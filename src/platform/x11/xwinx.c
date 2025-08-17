@@ -37,6 +37,7 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
                                           u32 width, u32 height) {
   WinxNativeWindow *window = malloc(sizeof(WinxNativeWindow));
   window->winx = winx;
+
   window->visual = XDefaultVisual(winx->display, winx->screen);
   window->depth = XDefaultDepth(winx->display, winx->screen);
 
