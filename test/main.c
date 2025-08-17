@@ -5,12 +5,15 @@
 
 static u32 colors[] = { 0xFFFF0000, 0xFF00FF00, 0xFF0000FF };
 
-bool process_event(WinxWindow *window, WinxEvent *event, u32 *color_index) {
+void fill_window_framebuffer(WinxWindow *window, u32 color_index) {
+  for (u32 i = 0; i < window->width * window->height; ++i)
+      window->framebuffer[i] = colors[color_index];
+}
+
+bool process_event(WinxEvent *event, u32 *color_index) {
   if (event->kind == WinxEventKindQuit) {
     return false;
-  } else if (event->kind == WinxEventKindResize) {
-    winx_init_framebuffer(window);
-  } else if (event->kind == WinxEventKindKeyPress) {
+  }  else if (event->kind == WinxEventKindKeyPress) {
     if (event->as.key_press.key_code == WinxKeyCodeRight) {
       if (++*color_index >= ARRAY_LEN(colors))
         *color_index = 0;
@@ -36,14 +39,13 @@ int main(void) {
   while (is_running) {
     WinxEvent event;
     while ((event = winx_get_event(&window, false)).kind != WinxEventKindNone) {
-      is_running = process_event(&window, &event, &color_index);
+      is_running = process_event(&event, &color_index);
       if (!is_running)
         break;
     }
 
-    for (u32 i = 0; i < window.width * window.height; ++i)
-      window.framebuffer[i] = colors[color_index];
-    winx_redraw(&window);
+    fill_window_framebuffer(&window, color_index);
+    winx_draw(&window);
   }
 
   winx_destroy_window(&window);

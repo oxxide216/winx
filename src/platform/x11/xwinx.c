@@ -92,15 +92,14 @@ void winx_native_init_framebuffer(WinxNativeWindow *window, u32 width,
                                0, (char *) *framebuffer, width, height, 8, width * sizeof(u32));
 }
 
-void winx_native_redraw(WinxNativeWindow *window, u32 width, u32 height) {
-  XClearWindow(window->winx->display, window->window);
+void winx_native_draw(WinxNativeWindow *window, u32 width, u32 height) {
   XPutImage(window->winx->display, window->window, window->graphic_context,
             window->image, 0, 0, 0, 0, width, height);
 }
 
 void winx_native_destroy_window(WinxNativeWindow *window) {
-  XDestroyImage(window->image);
   XFreeGC(window->winx->display, window->graphic_context);
+  XDestroyImage(window->image);
   XUnmapWindow(window->winx->display, window->window);
   XDestroyWindow(window->winx->display, window->window);
 }

@@ -24,8 +24,8 @@ void winx_init_framebuffer(WinxWindow *window) {
                                window->height, &window->framebuffer);
 }
 
-void winx_redraw(WinxWindow *window) {
-  winx_native_redraw(window->native, window->width, window->height);
+void winx_draw(WinxWindow *window) {
+  winx_native_draw(window->native, window->width, window->height);
 }
 
 void winx_destroy_window(WinxWindow *window) {
