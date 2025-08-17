@@ -15,12 +15,15 @@ typedef struct {
   Str               name;
   u32               width;
   u32               height;
+  u32              *framebuffer;
   WinxNativeWindow *native;
 } WinxWindow;
 
 Winx       winx_init(void);
-WinxWindow winx_create_window(Winx *winx, Str name, u32 width, u32 height);
+WinxWindow winx_init_window(Winx *winx, Str name, u32 width, u32 height);
+void       winx_init_framebuffer(WinxWindow *window);
+void       winx_redraw(WinxWindow *window);
+void       winx_destroy_window(WinxWindow *window);
 void       winx_cleanup(Winx *winx);
-void       winx_destroy_window(Winx *winx, WinxWindow *window);
 
 #endif // WINX_H

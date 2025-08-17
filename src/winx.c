@@ -9,21 +9,31 @@ Winx winx_init(void) {
   return winx;
 }
 
-WinxWindow winx_create_window(Winx *winx, Str name, u32 width, u32 height) {
+WinxWindow winx_init_window(Winx *winx, Str name, u32 width, u32 height) {
   WinxWindow window;
   window.name = name;
   window.width = width;
   window.height = height;
-  window.native = winx_create_native_window(winx->native, name, width, height);
+  window.framebuffer = NULL;
+  window.native = winx_native_init_window(winx->native, name, width, height);
   return window;
+}
+
+void winx_init_framebuffer(WinxWindow *window) {
+  winx_native_init_framebuffer(window->native, window->width,
+                               window->height, &window->framebuffer);
+}
+
+void winx_redraw(WinxWindow *window) {
+  winx_native_redraw(window->native, window->width, window->height);
+}
+
+void winx_destroy_window(WinxWindow *window) {
+  winx_native_destroy_window(window->native);
+  free(window->native);
 }
 
 void winx_cleanup(Winx *winx) {
   winx_native_cleanup(winx->native);
   free(winx->native);
-}
-
-void winx_destroy_window(Winx *winx, WinxWindow *window) {
-  winx_destroy_native_window(winx->native, window->native);
-  free(window->native);
 }

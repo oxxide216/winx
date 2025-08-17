@@ -3,6 +3,7 @@
 
 #include <X11/Xlib.h>
 
+#include "../winx.h"
 #include "shl_defs.h"
 
 struct WinxNative {
@@ -13,9 +14,13 @@ struct WinxNative {
 };
 
 struct WinxNativeWindow {
-  Window window;
-  GC     graphic_context;
-  XIC    ic;
+  WinxNative *winx;
+  Window      window;
+  GC          graphic_context;
+  Visual     *visual;
+  i32         depth;
+  XIC         ic;
+  XImage     *image;
 };
 
 #endif // X11_WINX_H

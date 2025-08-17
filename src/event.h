@@ -11,9 +11,9 @@ typedef enum {
   WinxEventKindKeyRelease,
   WinxEventKindButtonPress,
   WinxEventKindButtonRelease,
+  WinxEventKindMouseMove,
   WinxEventKindFocus,
   WinxEventKindUnfocus,
-  WinxEventKindMouseMove,
   WinxEventKindResize,
   WinxEventKindQuit,
 } WinxEventKind;
@@ -68,6 +68,6 @@ typedef struct {
   WinxEventAs   as;
 } WinxEvent;
 
-WinxEvent winx_get_event(Winx *winx, bool wait);
+WinxEvent winx_get_event(WinxWindow *window, bool wait);
 
 #endif // EVENT_H

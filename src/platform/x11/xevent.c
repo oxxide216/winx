@@ -21,14 +21,14 @@ static u32 non_printable_wchars[] = {
 #define WIDE_CHAR_NONE0 32512
 #define WIDE_CHAR_NONE1 32539
 
-WinxEvent winx_native_get_event(WinxNative *winx, bool wait) {
+WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
   WinxEvent winx_event = { WinxEventKindNone, {} };
 
-  if (!wait && XPending(winx->display) == 0)
+  if (!wait && XPending(window->winx->display) == 0)
     return winx_event;
 
   XEvent x_event;
-  XNextEvent(winx->display, &x_event);
+  XNextEvent(window->winx->display, &x_event);
 
   switch (x_event.type) {
   case KeyPress:
@@ -70,8 +70,40 @@ WinxEvent winx_native_get_event(WinxNative *winx, bool wait) {
     }
   } break;
 
+  case ButtonPress:
+  case ButtonRelease: {
+    ;
+  } break;
+
+  case MotionNotify: {
+    winx_event.kind = WinxEventKindMouseMove;
+    winx_event.as.mouse_move = (WinxEventMouseMove) {
+      x_event.xmotion.x,
+      x_event.xmotion.y,
+    };
+  } break;
+
+  case EnterNotify: {
+    winx_event.kind = WinxEventKindFocus;
+  } break;
+
+  case LeaveNotify: {
+    winx_event.kind = WinxEventKindUnfocus;
+  } break;
+
+  case ConfigureNotify: {
+    u32 new_width = x_event.xconfigure.width;
+    u32 new_height = x_event.xconfigure.height;
+
+    XResizeWindow(window->winx->display, window->window,
+                  new_width, new_height);
+
+    winx_event.kind = WinxEventKindResize;
+    winx_event.as.resize = (WinxEventResize) { new_width, new_height };
+  } break;
+
   case ClientMessage: {
-    if (x_event.xclient.data.l[0] == (i64) winx->wm_delete_window)
+    if (x_event.xclient.data.l[0] == (i64) window->winx->wm_delete_window)
       winx_event.kind = WinxEventKindQuit;
   } break;
   }
