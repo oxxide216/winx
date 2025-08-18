@@ -9,5 +9,5 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name, u32 width,
 void              winx_native_init_framebuffer(WinxNativeWindow *window, u32 width,
                                                u32 height, u32 **framebuffer);
 void              winx_native_draw(WinxNativeWindow *window, u32 width, u32 height);
-void              winx_native_destroy_window(WinxNativeWindow *window);
+void              winx_native_destroy_window(WinxNativeWindow *window, bool has_framebuffer);
 void              winx_native_cleanup(WinxNative *winx);

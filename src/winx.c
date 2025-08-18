@@ -29,7 +29,7 @@ void winx_draw(WinxWindow *window) {
 }
 
 void winx_destroy_window(WinxWindow *window) {
-  winx_native_destroy_window(window->native);
+  winx_native_destroy_window(window->native, window->framebuffer != NULL);
   free(window->native);
 }
 

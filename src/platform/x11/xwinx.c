@@ -98,9 +98,10 @@ void winx_native_draw(WinxNativeWindow *window, u32 width, u32 height) {
             window->image, 0, 0, 0, 0, width, height);
 }
 
-void winx_native_destroy_window(WinxNativeWindow *window) {
+void winx_native_destroy_window(WinxNativeWindow *window, bool has_framebuffer) {
+  if (has_framebuffer)
+    XDestroyImage(window->image);
   XFreeGC(window->winx->display, window->graphic_context);
-  XDestroyImage(window->image);
   XUnmapWindow(window->winx->display, window->window);
   XDestroyWindow(window->winx->display, window->window);
 }
