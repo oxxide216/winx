@@ -31,19 +31,21 @@ typedef struct {
 } WinxEventKeyRelease;
 
 typedef enum {
-  MouseButtonLeft = 0,
-  MouseButtonMiddle,
-  MouseButtonRight,
-  MouseButtonSide1,
-  MouseButtonSide2,
-} MouseButton;
+  WinxMouseButtonLeft = 0,
+  WinxMouseButtonMiddle,
+  WinxMouseButtonRight,
+  WinxMouseButtonSide1,
+  WinxMouseButtonSide2,
+  WinxMouseButtonCount,
+  WinxMouseButtonUnknown,
+} WinxMouseButton;
 
 typedef struct {
-  MouseButton button;
+  WinxMouseButton button;
 } WinxEventButtonPress;
 
 typedef struct {
-  MouseButton button;
+  WinxMouseButton button;
 } WinxEventButtonRelease;
 
 typedef struct {

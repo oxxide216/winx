@@ -8,7 +8,6 @@
 #include "winx.h"
 #include "event.h"
 #include "shl_defs.h"
-#include "shl_log.h"
 #include "wstr.h"
 
 static u32 non_printable_wchars[] = {
@@ -72,7 +71,17 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
 
   case ButtonPress:
   case ButtonRelease: {
-    ;
+    WinxMouseButton button = x_event.xbutton.button - 1;
+    if (button >= WinxMouseButtonCount)
+      button = WinxMouseButtonUnknown;
+
+    if (x_event.type == ButtonPress) {
+      winx_event.kind = WinxEventKindButtonPress;
+      winx_event.as.button_press = (WinxEventButtonPress) { button };
+    } else {
+      winx_event.kind = WinxEventKindButtonRelease;
+      winx_event.as.button_release = (WinxEventButtonRelease) { button };
+    }
   } break;
 
   case MotionNotify: {

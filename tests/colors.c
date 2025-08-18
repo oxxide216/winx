@@ -10,19 +10,34 @@ void fill_window_framebuffer(WinxWindow *window, u32 color_index) {
       window->framebuffer[i] = colors[color_index];
 }
 
+void color_index_move_forward(u32 *color_index) {
+  if (++*color_index >= ARRAY_LEN(colors))
+    *color_index = 0;
+}
+
+void color_index_move_backward(u32 *color_index) {
+  if (*color_index == 0)
+    *color_index = ARRAY_LEN(colors) - 1;
+  else
+    --*color_index;
+}
+
 bool process_event(WinxEvent *event, u32 *color_index) {
   if (event->kind == WinxEventKindQuit) {
     return false;
-  }  else if (event->kind == WinxEventKindKeyPress) {
-    if (event->as.key_press.key_code == WinxKeyCodeRight) {
-      if (++*color_index >= ARRAY_LEN(colors))
-        *color_index = 0;
-    } else if (event->as.key_press.key_code == WinxKeyCodeLeft) {
-      if (*color_index == 0)
-        *color_index = ARRAY_LEN(colors) - 1;
-      else
-        --*color_index;
-    }
+  } else if (event->kind == WinxEventKindKeyPress) {
+    if (event->as.key_press.key_code == WinxKeyCodeRight)
+      color_index_move_forward(color_index);
+    else if (event->as.key_press.key_code == WinxKeyCodeLeft)
+      color_index_move_backward(color_index);
+  } else if (event->kind == WinxEventKindButtonPress) {
+    if (event->as.button_press.button == WinxMouseButtonRight)
+      color_index_move_forward(color_index);
+    else if (event->as.button_press.button == WinxMouseButtonLeft)
+      color_index_move_backward(color_index);
+
+    INFO("%u:%u:%u\n", WinxMouseButtonRight,
+         WinxMouseButtonLeft, event->as.button_press.button);
   }
 
   return true;
