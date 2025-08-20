@@ -1,6 +1,7 @@
 #ifndef WINX_H
 #define WINX_H
 
+#include "graphics-mode.h"
 #include "shl_defs.h"
 #include "shl_str.h"
 
@@ -19,11 +20,15 @@ typedef struct {
   WinxNativeWindow *native;
 } WinxWindow;
 
-Winx       winx_init(void);
-WinxWindow winx_init_window(Winx *winx, Str name, u32 width, u32 height);
-void       winx_init_framebuffer(WinxWindow *window);
-void       winx_draw(WinxWindow *window);
-void       winx_destroy_window(WinxWindow *window);
-void       winx_cleanup(Winx *winx);
+Winx        winx_init(void);
+WinxWindow  winx_init_window(Winx *winx, Str name,
+                             u32 width, u32 height,
+                             WinxGraphicsMode graphics_mode,
+                             WinxWindow *parent);
+void        winx_init_framebuffer(WinxWindow *window);
+void        winx_draw(WinxWindow *window);
+u32        *winx_get_framebuffer(WinxWindow *window);
+void        winx_destroy_window(WinxWindow *window);
+void        winx_cleanup(Winx *winx);
 
 #endif // WINX_H

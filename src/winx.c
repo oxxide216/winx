@@ -9,27 +9,50 @@ Winx winx_init(void) {
   return winx;
 }
 
-WinxWindow winx_init_window(Winx *winx, Str name, u32 width, u32 height) {
+WinxWindow winx_init_window(Winx *winx, Str name,
+                            u32 width, u32 height,
+                            WinxGraphicsMode graphics_mode,
+                            WinxWindow *parent) {
   WinxWindow window;
   window.name = name;
   window.width = width;
   window.height = height;
-  window.framebuffer = NULL;
-  window.native = winx_native_init_window(winx->native, name, width, height);
+
+  WinxNativeWindow *native_parent = NULL;
+  if (parent)
+    native_parent = parent->native;
+
+  window.native = winx_native_init_window(winx->native, name,
+                                          width, height,
+                                          native_parent);
+
+  switch (graphics_mode) {
+  case WinxGraphicsModeFramebuffer: {
+    winx_native_init_framebuffer(window.native, window.width, window.height);
+  } break;
+
+  case WinxGraphicsModeOpenGL: {
+    winx_native_init_opengl_context(window.native);
+  } break;
+  }
+
   return window;
 }
 
 void winx_init_framebuffer(WinxWindow *window) {
-  winx_native_init_framebuffer(window->native, window->width,
-                               window->height, &window->framebuffer);
+  winx_native_init_framebuffer(window->native, window->width, window->height);
 }
 
 void winx_draw(WinxWindow *window) {
   winx_native_draw(window->native, window->width, window->height);
 }
 
+u32 *winx_get_framebuffer(WinxWindow *window) {
+  return winx_native_get_framebuffer(window->native);
+}
+
 void winx_destroy_window(WinxWindow *window) {
-  winx_native_destroy_window(window->native, window->framebuffer != NULL);
+  winx_native_destroy_window(window->native);
   free(window->native);
 }
 

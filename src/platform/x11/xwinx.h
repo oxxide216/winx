@@ -20,6 +20,7 @@ struct WinxNativeWindow {
   Visual     *visual;
   i32         depth;
   XIC         ic;
+  u32        *framebuffer;
   XImage     *image;
 };
 

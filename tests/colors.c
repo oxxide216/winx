@@ -6,8 +6,9 @@
 static u32 colors[] = { 0xFFFF0000, 0xFF00FF00, 0xFF0000FF };
 
 void fill_window_framebuffer(WinxWindow *window, u32 color_index) {
+  u32 *framebuffer = winx_get_framebuffer(window);
   for (u32 i = 0; i < window->width * window->height; ++i)
-      window->framebuffer[i] = colors[color_index];
+      framebuffer[i] = colors[color_index];
 }
 
 void color_index_move_forward(u32 *color_index) {
@@ -45,8 +46,9 @@ bool process_event(WinxEvent *event, u32 *color_index) {
 
 int main(void) {
   Winx winx = winx_init();
-  WinxWindow window = winx_init_window(&winx, STR_LIT("Hello, world!"), 640, 480);
-  winx_init_framebuffer(&window);
+  WinxWindow window = winx_init_window(&winx, STR_LIT("Hello, world!"),
+                                       640, 480, WinxGraphicsModeFramebuffer,
+                                       NULL);
 
   u32 color_index = 0;
   bool is_running = true;

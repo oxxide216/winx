@@ -1,5 +1,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <GL/glx.h>
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
@@ -34,23 +35,28 @@ WinxNative *winx_native_init(void) {
 }
 
 WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
-                                          u32 width, u32 height) {
+                                          u32 width, u32 height,
+                                          WinxNativeWindow *parent) {
   WinxNativeWindow *window = malloc(sizeof(WinxNativeWindow));
   window->winx = winx;
-
   window->visual = XDefaultVisual(winx->display, winx->screen);
   window->depth = XDefaultDepth(winx->display, winx->screen);
+  window->framebuffer = NULL;
 
-  Window root_window = RootWindow(winx->display, winx->screen);
+  Window parent_window;
+  if (parent)
+    parent_window = parent->window;
+  else
+    parent_window = RootWindow(winx->display, winx->screen);
 
   XSetWindowAttributes attributes = {
-    .colormap = XCreateColormap(winx->display, root_window, window->visual, AllocNone),
+    .colormap = XCreateColormap(winx->display, parent_window, window->visual, AllocNone),
     .background_pixel = 0,
     .border_pixel = 0,
     .event_mask = EVENT_MASK,
   };
 
-  window->window = XCreateWindow(winx->display, root_window,
+  window->window = XCreateWindow(winx->display, parent_window,
                                  0, 0, width, height, 0, window->depth,
                                  InputOutput, window->visual,
                                  CWBackPixel | CWColormap |
@@ -82,24 +88,33 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
   return window;
 }
 
-void winx_native_init_framebuffer(WinxNativeWindow *window, u32 width,
-                                  u32 height, u32 **framebuffer) {
-  if (*framebuffer)
-    free(*framebuffer);
+void winx_native_init_framebuffer(WinxNativeWindow *window, u32 width, u32 height) {
+  if (window->framebuffer)
+    free(window->framebuffer);
 
   u32 len = width * height;
-  *framebuffer = malloc(len * sizeof(u32));
-  window->image = XCreateImage(window->winx->display, window->visual, window->depth, ZPixmap,
-                               0, (char *) *framebuffer, width, height, 8, width * sizeof(u32));
+  window->framebuffer = malloc(len * sizeof(u32));
+  window->image = XCreateImage(window->winx->display, window->visual,
+                               window->depth, ZPixmap, 0, (char *) window->framebuffer,
+                               width, height, 8, width * sizeof(u32));
+}
+
+void winx_native_init_opengl_context(WinxNativeWindow *window) {
+  (void) window;
 }
 
 void winx_native_draw(WinxNativeWindow *window, u32 width, u32 height) {
-  XPutImage(window->winx->display, window->window, window->graphic_context,
-            window->image, 0, 0, 0, 0, width, height);
+  if (window->framebuffer)
+    XPutImage(window->winx->display, window->window, window->graphic_context,
+              window->image, 0, 0, 0, 0, width, height);
 }
 
-void winx_native_destroy_window(WinxNativeWindow *window, bool has_framebuffer) {
-  if (has_framebuffer)
+u32 *winx_native_get_framebuffer(WinxNativeWindow *window) {
+  return window->framebuffer;
+}
+
+void winx_native_destroy_window(WinxNativeWindow *window) {
+  if (window->framebuffer)
     XDestroyImage(window->image);
   XFreeGC(window->winx->display, window->graphic_context);
   XUnmapWindow(window->winx->display, window->window);
