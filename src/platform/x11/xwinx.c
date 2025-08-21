@@ -1,6 +1,5 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <GL/glx.h>
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
@@ -34,14 +33,28 @@ WinxNative *winx_native_init(void) {
   return winx;
 }
 
+static XVisualInfo *winx_get_visual_info(WinxNative *winx, WinxGraphicsMode graphics_mode) {
+  if (graphics_mode == WinxGraphicsModeFramebuffer) {
+    i32 num_screens = 0;
+    return XGetVisualInfo(winx->display, VisualScreenMask, NULL, &num_screens);
+  } else if (graphics_mode == WinxGraphicsModeOpenGL) {
+    GLint gl_visual_attributes[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
+    return glXChooseVisual(winx->display, 0, gl_visual_attributes);
+  }
+
+    ERROR("Wrong graphics mode\n");
+    exit(1);
+}
+
 WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
                                           u32 width, u32 height,
+                                          WinxGraphicsMode graphics_mode,
                                           WinxNativeWindow *parent) {
   WinxNativeWindow *window = malloc(sizeof(WinxNativeWindow));
   window->winx = winx;
-  window->visual = XDefaultVisual(winx->display, winx->screen);
-  window->depth = XDefaultDepth(winx->display, winx->screen);
   window->framebuffer = NULL;
+  window->graphics_mode = graphics_mode;
+  window->visual_info = winx_get_visual_info(winx, graphics_mode);
 
   Window parent_window;
   if (parent)
@@ -50,15 +63,16 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
     parent_window = RootWindow(winx->display, winx->screen);
 
   XSetWindowAttributes attributes = {
-    .colormap = XCreateColormap(winx->display, parent_window, window->visual, AllocNone),
+    .colormap = XCreateColormap(winx->display, parent_window,
+                                window->visual_info->visual, AllocNone),
     .background_pixel = 0,
     .border_pixel = 0,
     .event_mask = EVENT_MASK,
   };
 
   window->window = XCreateWindow(winx->display, parent_window,
-                                 0, 0, width, height, 0, window->depth,
-                                 InputOutput, window->visual,
+                                 0, 0, width, height, 0, window->visual_info->depth,
+                                 InputOutput, window->visual_info->visual,
                                  CWBackPixel | CWColormap |
                                  CWBorderPixel | CWEventMask,
                                  &attributes);
@@ -79,6 +93,16 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
   gcv.graphics_exposures = 0;
   window->graphic_context = XCreateGC(winx->display, window->window, gcm, &gcv);
 
+  switch (graphics_mode) {
+  case WinxGraphicsModeFramebuffer: {
+    winx_native_init_framebuffer(window, width, height);
+  } break;
+
+  case WinxGraphicsModeOpenGL: {
+    winx_native_init_gl_context(window);
+  } break;
+  }
+
   window->ic = XCreateIC(winx->im, XNInputStyle, XIMPreeditNothing | XIMStatusNothing,
                          XNClientWindow, window->window, XNFocusWindow, window->window, NULL);
   XSetICFocus(window->ic);
@@ -94,28 +118,39 @@ void winx_native_init_framebuffer(WinxNativeWindow *window, u32 width, u32 heigh
 
   u32 len = width * height;
   window->framebuffer = malloc(len * sizeof(u32));
-  window->image = XCreateImage(window->winx->display, window->visual,
-                               window->depth, ZPixmap, 0, (char *) window->framebuffer,
+  window->image = XCreateImage(window->winx->display, window->visual_info->visual,
+                               window->visual_info->depth, ZPixmap,
+                               0, (char *) window->framebuffer,
                                width, height, 8, width * sizeof(u32));
-}
-
-void winx_native_init_opengl_context(WinxNativeWindow *window) {
-  (void) window;
-}
-
-void winx_native_draw(WinxNativeWindow *window, u32 width, u32 height) {
-  if (window->framebuffer)
-    XPutImage(window->winx->display, window->window, window->graphic_context,
-              window->image, 0, 0, 0, 0, width, height);
 }
 
 u32 *winx_native_get_framebuffer(WinxNativeWindow *window) {
   return window->framebuffer;
 }
 
+void winx_native_init_gl_context(WinxNativeWindow *window) {
+  window->gl_context = glXCreateContext(window->winx->display,
+                                        window->visual_info,
+                                        NULL, GL_TRUE);
+  glXMakeCurrent(window->winx->display, window->window, window->gl_context);
+}
+
+void winx_native_draw(WinxNativeWindow *window, u32 width, u32 height) {
+  if (window->graphics_mode == WinxGraphicsModeFramebuffer)
+    XPutImage(window->winx->display, window->window, window->graphic_context,
+              window->image, 0, 0, 0, 0, width, height);
+  else if (window->graphics_mode == WinxGraphicsModeOpenGL)
+    glXSwapBuffers(window->winx->display, window->window);
+}
+
 void winx_native_destroy_window(WinxNativeWindow *window) {
-  if (window->framebuffer)
+  if (window->graphics_mode == WinxGraphicsModeFramebuffer) {
     XDestroyImage(window->image);
+  } else if (window->graphics_mode == WinxGraphicsModeOpenGL) {
+    glXMakeCurrent(window->winx->display, None, NULL);
+    glXDestroyContext(window->winx->display, window->gl_context);
+  }
+
   XFreeGC(window->winx->display, window->graphic_context);
   XUnmapWindow(window->winx->display, window->window);
   XDestroyWindow(window->winx->display, window->window);

@@ -24,17 +24,8 @@ WinxWindow winx_init_window(Winx *winx, Str name,
 
   window.native = winx_native_init_window(winx->native, name,
                                           width, height,
+                                          graphics_mode,
                                           native_parent);
-
-  switch (graphics_mode) {
-  case WinxGraphicsModeFramebuffer: {
-    winx_native_init_framebuffer(window.native, window.width, window.height);
-  } break;
-
-  case WinxGraphicsModeOpenGL: {
-    winx_native_init_opengl_context(window.native);
-  } break;
-  }
 
   return window;
 }
@@ -43,12 +34,12 @@ void winx_init_framebuffer(WinxWindow *window) {
   winx_native_init_framebuffer(window->native, window->width, window->height);
 }
 
-void winx_draw(WinxWindow *window) {
-  winx_native_draw(window->native, window->width, window->height);
-}
-
 u32 *winx_get_framebuffer(WinxWindow *window) {
   return winx_native_get_framebuffer(window->native);
+}
+
+void winx_draw(WinxWindow *window) {
+  winx_native_draw(window->native, window->width, window->height);
 }
 
 void winx_destroy_window(WinxWindow *window) {

@@ -26,8 +26,8 @@ WinxWindow  winx_init_window(Winx *winx, Str name,
                              WinxGraphicsMode graphics_mode,
                              WinxWindow *parent);
 void        winx_init_framebuffer(WinxWindow *window);
-void        winx_draw(WinxWindow *window);
 u32        *winx_get_framebuffer(WinxWindow *window);
+void        winx_draw(WinxWindow *window);
 void        winx_destroy_window(WinxWindow *window);
 void        winx_cleanup(Winx *winx);
 
