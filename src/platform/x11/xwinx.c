@@ -56,6 +56,8 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
   window->graphics_mode = graphics_mode;
   window->visual_info = winx_get_visual_info(winx, graphics_mode);
 
+  XMatchVisualInfo(winx->display, winx->screen, 32, TrueColor, window->visual_info);
+
   Window parent_window;
   if (parent)
     parent_window = parent->window;
