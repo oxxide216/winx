@@ -17,9 +17,6 @@ static u32 non_printable_wchars[] = {
   32639, // Delete
 };
 
-#define WIDE_CHAR_NONE0 32512
-#define WIDE_CHAR_NONE1 32539
-
 WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
   WinxEvent winx_event = { WinxEventKindNone, {} };
 
@@ -34,7 +31,8 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
   case KeyRelease: {
     char key_name[4];
     KeySym keysym;
-    i32 key_name_len = XLookupString(&x_event.xkey, key_name, ARRAY_LEN(key_name), &keysym, NULL);
+    i32 key_name_len = XLookupString(&x_event.xkey, key_name,
+                                     ARRAY_LEN(key_name), &keysym, NULL);
 
     if (key_name_len > 4)
       return winx_event;
