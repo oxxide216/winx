@@ -42,10 +42,12 @@ typedef enum {
 
 typedef struct {
   WinxMouseButton button;
+  u32             x, y;
 } WinxEventButtonPress;
 
 typedef struct {
   WinxMouseButton button;
+  u32             x, y;
 } WinxEventButtonRelease;
 
 typedef struct {

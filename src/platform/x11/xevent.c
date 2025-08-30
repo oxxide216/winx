@@ -77,10 +77,18 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
 
     if (x_event.type == ButtonPress) {
       winx_event.kind = WinxEventKindButtonPress;
-      winx_event.as.button_press = (WinxEventButtonPress) { button };
+      winx_event.as.button_press = (WinxEventButtonPress) {
+        button,
+        x_event.xbutton.x,
+        x_event.xbutton.y,
+      };
     } else {
       winx_event.kind = WinxEventKindButtonRelease;
-      winx_event.as.button_release = (WinxEventButtonRelease) { button };
+      winx_event.as.button_release = (WinxEventButtonRelease) {
+        button,
+        x_event.xbutton.x,
+        x_event.xbutton.y,
+      };
     }
   } break;
 
