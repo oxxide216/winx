@@ -24,17 +24,7 @@ typedef u32 WChar;
 typedef struct {
   WinxKeyCode key_code;
   WChar       _char;
-} WinxEventKeyPress;
-
-typedef struct {
-  WinxKeyCode key_code;
-  WChar       _char;
-} WinxEventKeyRelease;
-
-typedef struct {
-  WinxKeyCode key_code;
-  WChar       _char;
-} WinxEventKeyHold;
+} WinxEventKey;
 
 typedef enum {
   WinxMouseButtonLeft = 0,
@@ -49,12 +39,7 @@ typedef enum {
 typedef struct {
   WinxMouseButton button;
   u32             x, y;
-} WinxEventButtonPress;
-
-typedef struct {
-  WinxMouseButton button;
-  u32             x, y;
-} WinxEventButtonRelease;
+} WinxEventButton;
 
 typedef struct {
   u32 x, y;
@@ -65,13 +50,10 @@ typedef struct {
 } WinxEventResize;
 
 typedef union {
-  WinxEventKeyPress      key_press;
-  WinxEventKeyRelease    key_release;
-  WinxEventKeyHold       key_hold;
-  WinxEventButtonPress   button_press;
-  WinxEventButtonRelease button_release;
-  WinxEventMouseMove     mouse_move;
-  WinxEventResize        resize;
+  WinxEventKey       key;
+  WinxEventButton    button;
+  WinxEventMouseMove mouse_move;
+  WinxEventResize    resize;
 } WinxEventAs;
 
 typedef struct {

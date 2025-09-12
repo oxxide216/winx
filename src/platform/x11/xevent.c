@@ -52,25 +52,17 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
     bool is_repeat = window->prev_x_event.xkey.time == x_event.xkey.time &&
                      window->prev_x_event.xkey.keycode == x_event.xkey.keycode;
 
-    if (is_repeat) {
+    if (is_repeat)
       winx_event.kind = WinxEventKindKeyHold;
-      winx_event.as.key_hold = (WinxEventKeyHold) {
-        keysym_to_key_code(keysym),
-        wchar,
-      };
-    } else if (x_event.type == KeyPress) {
+    else if (x_event.type == KeyPress)
       winx_event.kind = WinxEventKindKeyPress;
-      winx_event.as.key_press = (WinxEventKeyPress) {
-        keysym_to_key_code(keysym),
-        wchar,
-      };
-    } else {
+    else
       winx_event.kind = WinxEventKindKeyRelease;
-      winx_event.as.key_release = (WinxEventKeyRelease) {
-        keysym_to_key_code(keysym),
-        wchar,
-      };
-    }
+
+    winx_event.as.key = (WinxEventKey) {
+      keysym_to_key_code(keysym),
+      wchar,
+    };
   } break;
 
   case ButtonPress:
@@ -79,21 +71,16 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
     if (button >= WinxMouseButtonCount)
       button = WinxMouseButtonUnknown;
 
-    if (x_event.type == ButtonPress) {
+    if (x_event.type == ButtonPress)
       winx_event.kind = WinxEventKindButtonPress;
-      winx_event.as.button_press = (WinxEventButtonPress) {
-        button,
-        x_event.xbutton.x,
-        x_event.xbutton.y,
-      };
-    } else {
+    else
       winx_event.kind = WinxEventKindButtonRelease;
-      winx_event.as.button_release = (WinxEventButtonRelease) {
-        button,
-        x_event.xbutton.x,
-        x_event.xbutton.y,
-      };
-    }
+
+    winx_event.as.button = (WinxEventButton) {
+      button,
+      x_event.xbutton.x,
+      x_event.xbutton.y,
+    };
   } break;
 
   case MotionNotify: {
