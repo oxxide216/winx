@@ -9,13 +9,13 @@
 #include "shl_str.h"
 #include "shl_log.h"
 
-#define EVENT_MASK (KeyPressMask |      \
-                    KeyReleaseMask |    \
-                    ButtonPressMask |   \
-                    ButtonReleaseMask | \
-                    PointerMotionMask | \
-                    EnterWindowMask |   \
-                    LeaveWindowMask |   \
+#define EVENT_MASK (KeyPressMask |       \
+                    KeyReleaseMask |     \
+                    ButtonPressMask |    \
+                    ButtonReleaseMask |  \
+                    PointerMotionMask |  \
+                    EnterWindowMask |    \
+                    LeaveWindowMask |    \
                     StructureNotifyMask)
 
 typedef struct WinxNative WinxNative;
@@ -36,7 +36,7 @@ WinxNative *winx_native_init(void) {
 static XVisualInfo *winx_get_visual_info(WinxNative *winx, WinxGraphicsMode graphics_mode) {
   if (graphics_mode == WinxGraphicsModeFramebuffer) {
     i32 num_screens = 0;
-    return XGetVisualInfo(winx->display, VisualScreenMask, NULL, &num_screens);
+    return XGetVisualInfo(winx->display, 0, NULL, &num_screens);
   } else if (graphics_mode == WinxGraphicsModeOpenGL) {
     GLint gl_visual_attributes[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
     return glXChooseVisual(winx->display, 0, gl_visual_attributes);
