@@ -9,6 +9,7 @@ typedef enum {
   WinxEventKindNone = 0,
   WinxEventKindKeyPress,
   WinxEventKindKeyRelease,
+  WinxEventKindKeyHold,
   WinxEventKindButtonPress,
   WinxEventKindButtonRelease,
   WinxEventKindMouseMove,
@@ -29,6 +30,11 @@ typedef struct {
   WinxKeyCode key_code;
   WChar       _char;
 } WinxEventKeyRelease;
+
+typedef struct {
+  WinxKeyCode key_code;
+  WChar       _char;
+} WinxEventKeyHold;
 
 typedef enum {
   WinxMouseButtonLeft = 0,
@@ -61,6 +67,7 @@ typedef struct {
 typedef union {
   WinxEventKeyPress      key_press;
   WinxEventKeyRelease    key_release;
+  WinxEventKeyHold       key_hold;
   WinxEventButtonPress   button_press;
   WinxEventButtonRelease button_release;
   WinxEventMouseMove     mouse_move;

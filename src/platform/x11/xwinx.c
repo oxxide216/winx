@@ -79,6 +79,12 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
                                  CWBorderPixel | CWEventMask,
                                  &attributes);
 
+  window->ic = XCreateIC(winx->im,
+                         XNInputStyle, XIMPreeditNothing | XIMStatusNothing,
+                         XNClientWindow, window->window,
+                         XNFocusWindow, window->window,
+                         NULL);
+
   char *cstr_name = name.ptr;
   if (strlen(cstr_name) != name.len) {
     u8 *cstr_name = malloc(name.len + 1);

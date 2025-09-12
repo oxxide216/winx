@@ -27,6 +27,9 @@ bool process_event(WinxEvent *event, u32 *color_index) {
   if (event->kind == WinxEventKindQuit) {
     return false;
   } else if (event->kind == WinxEventKindKeyPress) {
+    if (event->as.key_press._char != '\0')
+      INFO("%.*s\n", 4, (char *) &event->as.key_press._char);
+
     if (event->as.key_press.key_code == WinxKeyCodeRight)
       color_index_move_forward(color_index);
     else if (event->as.key_press.key_code == WinxKeyCodeLeft)

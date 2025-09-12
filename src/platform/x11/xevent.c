@@ -29,26 +29,30 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
   switch (x_event.type) {
   case KeyPress:
   case KeyRelease: {
+    XSetICFocus(window->ic);
+
     char key_name[4];
     KeySym keysym;
-    i32 key_name_len = XLookupString(&x_event.xkey, key_name,
-                                     ARRAY_LEN(key_name), &keysym, NULL);
+    Status status;
+    u32 key_name_len = Xutf8LookupString(window->ic, &x_event.xkey, key_name,
+                                        ARRAY_LEN(key_name), &keysym, &status);
 
-    if (key_name_len > 4)
-      return winx_event;
+    WChar wchar = '\0';
+    if (status == XLookupChars || status == XLookupBoth)
+      wchar = *(WChar *) key_name;
 
-    u32 wchar = *(u32 *) key_name;
+    if (!iswprint(wchar)) {
+      switch (wchar) {
+      case 32525:  // Enter
+      case 32521:  // Tab
+      case 32520:  // Backspace
+      case 32639: // Delete
+      case 32539: // Escape
+        break;
 
-    if (wchar == 32525) { // Enter
-      wchar = '\n';
-    } else if (!iswprint(wchar)) {
-      wchar = 0;
-    } else {
-      for (u32 i = 0; i < ARRAY_LEN(non_printable_wchars); ++i) {
-        if (wchar == non_printable_wchars[i]) {
-          wchar = 0;
-          break;
-        }
+      default: {
+        wchar = '\0';
+      } break;
       }
     }
 
@@ -59,11 +63,22 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
         wchar,
       };
     } else {
-      winx_event.kind = WinxEventKindKeyRelease;
-      winx_event.as.key_release = (WinxEventKeyRelease) {
-        keysym_to_key_code(keysym),
-        wchar,
-      };
+      bool is_repeat = window->prev_x_event.xkey.time == x_event.xkey.time &&
+                       window->prev_x_event.xkey.keycode == x_event.xkey.keycode;
+
+      if (is_repeat) {
+        winx_event.kind = WinxEventKindKeyHold;
+        winx_event.as.key_hold = (WinxEventKeyHold) {
+          keysym_to_key_code(keysym),
+          wchar,
+        };
+      } else {
+        winx_event.kind = WinxEventKindKeyRelease;
+        winx_event.as.key_release = (WinxEventKeyRelease) {
+          keysym_to_key_code(keysym),
+          wchar,
+        };
+      }
     }
   } break;
 
@@ -123,5 +138,6 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
   } break;
   }
 
+  window->prev_x_event = x_event;
   return winx_event;
 }

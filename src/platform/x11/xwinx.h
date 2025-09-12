@@ -12,6 +12,7 @@ struct WinxNative {
   i32      screen;
   Atom     wm_delete_window;
   XIM      im;
+  XIC      ic;
 };
 
 struct WinxNativeWindow {
@@ -24,6 +25,7 @@ struct WinxNativeWindow {
   XImage           *image;
   GLXContext        gl_context;
   XIC               ic;
+  XEvent            prev_x_event;
 };
 
 #endif // X11_WINX_H
