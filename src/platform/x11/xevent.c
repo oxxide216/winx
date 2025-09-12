@@ -10,13 +10,6 @@
 #include "shl_defs.h"
 #include "wstr.h"
 
-static u32 non_printable_wchars[] = {
-  32512, // Special keys
-  32539, // Caps Lock
-  32520, // Backspace
-  32639, // Delete
-};
-
 WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
   WinxEvent winx_event = { WinxEventKindNone, {} };
 
@@ -34,51 +27,49 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
     char key_name[4];
     KeySym keysym;
     Status status;
-    u32 key_name_len = Xutf8LookupString(window->ic, &x_event.xkey, key_name,
-                                        ARRAY_LEN(key_name), &keysym, &status);
+    Xutf8LookupString(window->ic, &x_event.xkey, key_name,
+                      ARRAY_LEN(key_name), &keysym, &status);
 
     WChar wchar = '\0';
     if (status == XLookupChars || status == XLookupBoth)
       wchar = *(WChar *) key_name;
 
-    if (!iswprint(wchar)) {
-      switch (wchar) {
-      case 32525:  // Enter
-      case 32521:  // Tab
-      case 32520:  // Backspace
-      case 32639: // Delete
-      case 32539: // Escape
-        break;
+    switch (wchar) {
+    case 32525:   // Enter
+    case 32521:   // Tab
+    case 32520:   // Backspace
+    case 32639:   // Delete
+    case 32539: { // Escape
+      wchar = '\0';
+    } break;
 
-      default: {
+    default: {
+      if (!iswprint(wchar))
         wchar = '\0';
-      } break;
-      }
+    } break;
     }
 
-    if (x_event.type == KeyPress) {
+    bool is_repeat = window->prev_x_event.xkey.time == x_event.xkey.time &&
+                     window->prev_x_event.xkey.keycode == x_event.xkey.keycode;
+
+    if (is_repeat) {
+      winx_event.kind = WinxEventKindKeyHold;
+      winx_event.as.key_hold = (WinxEventKeyHold) {
+        keysym_to_key_code(keysym),
+        wchar,
+      };
+    } else if (x_event.type == KeyPress) {
       winx_event.kind = WinxEventKindKeyPress;
       winx_event.as.key_press = (WinxEventKeyPress) {
         keysym_to_key_code(keysym),
         wchar,
       };
     } else {
-      bool is_repeat = window->prev_x_event.xkey.time == x_event.xkey.time &&
-                       window->prev_x_event.xkey.keycode == x_event.xkey.keycode;
-
-      if (is_repeat) {
-        winx_event.kind = WinxEventKindKeyHold;
-        winx_event.as.key_hold = (WinxEventKeyHold) {
-          keysym_to_key_code(keysym),
-          wchar,
-        };
-      } else {
-        winx_event.kind = WinxEventKindKeyRelease;
-        winx_event.as.key_release = (WinxEventKeyRelease) {
-          keysym_to_key_code(keysym),
-          wchar,
-        };
-      }
+      winx_event.kind = WinxEventKindKeyRelease;
+      winx_event.as.key_release = (WinxEventKeyRelease) {
+        keysym_to_key_code(keysym),
+        wchar,
+      };
     }
   } break;
 
