@@ -27,21 +27,21 @@ bool process_event(WinxEvent *event, u32 *color_index) {
   if (event->kind == WinxEventKindQuit) {
     return false;
   } else if (event->kind == WinxEventKindKeyPress) {
-    if (event->as.key_press._char != '\0')
-      INFO("%.*s\n", 4, (char *) &event->as.key_press._char);
+    if (event->as.key._char != '\0')
+      INFO("%.*s\n", 4, (char *) &event->as.key._char);
 
-    if (event->as.key_press.key_code == WinxKeyCodeRight)
+    if (event->as.key.key_code == WinxKeyCodeRight)
       color_index_move_forward(color_index);
-    else if (event->as.key_press.key_code == WinxKeyCodeLeft)
+    else if (event->as.key.key_code == WinxKeyCodeLeft)
       color_index_move_backward(color_index);
   } else if (event->kind == WinxEventKindButtonPress) {
-    if (event->as.button_press.button == WinxMouseButtonRight)
+    if (event->as.button.button == WinxMouseButtonRight)
       color_index_move_forward(color_index);
-    else if (event->as.button_press.button == WinxMouseButtonLeft)
+    else if (event->as.button.button == WinxMouseButtonLeft)
       color_index_move_backward(color_index);
 
     INFO("%u:%u:%u\n", WinxMouseButtonRight,
-         WinxMouseButtonLeft, event->as.button_press.button);
+         WinxMouseButtonLeft, event->as.button.button);
   }
 
   return true;
