@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "winx.h"
+#include "winx/winx.h"
 #include "platform/winx.h"
 
 Winx winx_init(void) {

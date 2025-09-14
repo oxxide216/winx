@@ -1,3 +1,3 @@
-#include "../event.h"
+#include "winx/event.h"
 
 WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait);

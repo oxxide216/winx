@@ -1,6 +1,6 @@
-#include "graphics-mode.h"
-#include "shl_defs.h"
-#include "shl_str.h"
+#include "../graphics-mode.h"
+#include "../shl_defs.h"
+#include "../shl_str.h"
 
 typedef struct WinxNative WinxNative;
 typedef struct WinxNativeWindow WinxNativeWindow;

@@ -1,9 +1,9 @@
 #ifndef WINX_H
 #define WINX_H
 
-#include "graphics-mode.h"
-#include "shl_defs.h"
-#include "shl_str.h"
+#include "../../src/graphics-mode.h"
+#include "../../src/shl_defs.h"
+#include "../../src/shl_str.h"
 
 typedef struct WinxNative WinxNative;
 typedef struct WinxNativeWindow WinxNativeWindow;

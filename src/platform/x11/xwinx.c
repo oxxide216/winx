@@ -5,9 +5,9 @@
 #include <locale.h>
 
 #include "xwinx.h"
-#include "shl_defs.h"
-#include "shl_str.h"
-#include "shl_log.h"
+#include "../../shl_defs.h"
+#include "../../shl_str.h"
+#include "../../shl_log.h"
 
 #define EVENT_MASK (KeyPressMask |       \
                     KeyReleaseMask |     \

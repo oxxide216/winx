@@ -5,7 +5,7 @@
 #include <GL/glx.h>
 
 #include "../winx.h"
-#include "shl_defs.h"
+#include "../../shl_defs.h"
 
 struct WinxNative {
   Display *display;

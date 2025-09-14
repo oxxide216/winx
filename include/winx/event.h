@@ -2,8 +2,8 @@
 #define EVENT_H
 
 #include "winx.h"
-#include "key_code.h"
-#include "wstr.h"
+#include "../../src/key_code.h"
+#include "../../src/wstr.h"
 
 typedef enum {
   WinxEventKindNone = 0,

@@ -1,6 +1,6 @@
 #!/usr/bin/sh
 
-CFLAGS="-Wall -Wextra -Isrc"
+CFLAGS="-Wall -Wextra -Iinclude"
 WINX_SRC="$(find src -name "*.c" -not -path 'src/platform/*')"
 WINX_PLATFORM_SRC="$(find src/platform -name '*.c')"
 LIBS="-lX11 -lGL"

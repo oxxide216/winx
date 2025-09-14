@@ -3,7 +3,7 @@
 
 #include <X11/Xlib.h>
 
-#include "key_code.h"
+#include "../../key_code.h"
 
 WinxKeyCode keysym_to_key_code(KeySym keysym);
 

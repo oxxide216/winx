@@ -5,10 +5,10 @@
 
 #include "xwinx.h"
 #include "xkey_code.h"
-#include "winx.h"
-#include "event.h"
-#include "shl_defs.h"
-#include "wstr.h"
+#include "winx/winx.h"
+#include "winx/event.h"
+#include "../../shl_defs.h"
+#include "../../wstr.h"
 
 WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
   WinxEvent winx_event = { WinxEventKindNone, {} };
