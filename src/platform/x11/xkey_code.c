@@ -20,31 +20,57 @@ WinxKeyCode keysym_to_key_code(KeySym keysym) {
     case 0x0039: return WinxKeyCode9;
     case 0x003b: return WinxKeyCodeSemicolon;
     case 0x003d: return WinxKeyCodeEqual;
+    case 0x0061:
     case 0x0041: return WinxKeyCodeA;
+    case 0x0062:
     case 0x0042: return WinxKeyCodeB;
+    case 0x0063:
     case 0x0043: return WinxKeyCodeC;
+    case 0x0064:
     case 0x0044: return WinxKeyCodeD;
+    case 0x0065:
     case 0x0045: return WinxKeyCodeE;
+    case 0x0066:
     case 0x0046: return WinxKeyCodeF;
+    case 0x0067:
     case 0x0047: return WinxKeyCodeG;
+    case 0x0068:
     case 0x0048: return WinxKeyCodeH;
+    case 0x0069:
     case 0x0049: return WinxKeyCodeI;
+    case 0x006a:
     case 0x004a: return WinxKeyCodeJ;
+    case 0x006b:
     case 0x004b: return WinxKeyCodeK;
+    case 0x006c:
     case 0x004c: return WinxKeyCodeL;
+    case 0x006d:
     case 0x004d: return WinxKeyCodeM;
+    case 0x006e:
     case 0x004e: return WinxKeyCodeN;
+    case 0x006f:
     case 0x004f: return WinxKeyCodeO;
+    case 0x0070:
     case 0x0050: return WinxKeyCodeP;
+    case 0x0071:
     case 0x0051: return WinxKeyCodeQ;
+    case 0x0072:
     case 0x0052: return WinxKeyCodeR;
+    case 0x0073:
     case 0x0053: return WinxKeyCodeS;
+    case 0x0074:
     case 0x0054: return WinxKeyCodeT;
+    case 0x0075:
     case 0x0055: return WinxKeyCodeU;
+    case 0x0076:
     case 0x0056: return WinxKeyCodeV;
+    case 0x0077:
     case 0x0057: return WinxKeyCodeW;
+    case 0x0078:
     case 0x0058: return WinxKeyCodeX;
+    case 0x0079:
     case 0x0059: return WinxKeyCodeY;
+    case 0x007a:
     case 0x005a: return WinxKeyCodeZ;
     case 0x005b: return WinxKeyCodeLeftBracket;
     case 0x005c: return WinxKeyCodeBackslash;
