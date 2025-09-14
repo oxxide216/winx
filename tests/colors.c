@@ -1,5 +1,5 @@
-#include "winx.h"
-#include "event.h"
+#include "winx/winx.h"
+#include "winx/event.h"
 #include "shl_log.h"
 #include "shl_defs.h"
 
