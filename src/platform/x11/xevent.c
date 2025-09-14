@@ -24,29 +24,34 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
   case KeyRelease: {
     XSetICFocus(window->ic);
 
-    char key_name[4];
     KeySym keysym;
-    Status status;
-    Xutf8LookupString(window->ic, &x_event.xkey, key_name,
-                      ARRAY_LEN(key_name), &keysym, &status);
-
     WChar wchar = '\0';
-    if (status == XLookupChars || status == XLookupBoth)
-      wchar = *(WChar *) key_name;
 
-    switch (wchar) {
-    case 32525:   // Enter
-    case 32521:   // Tab
-    case 32520:   // Backspace
-    case 32639:   // Delete
-    case 32539: { // Escape
-      wchar = '\0';
-    } break;
+    if (x_event.type == KeyPress) {
+    char key_name[4];
+      Status status;
+      Xutf8LookupString(window->ic, &x_event.xkey, key_name,
+                        ARRAY_LEN(key_name), &keysym, &status);
 
-    default: {
-      if (!iswprint(wchar))
+      if (status == XLookupChars || status == XLookupBoth)
+        wchar = *(WChar *) key_name;
+
+      switch (wchar) {
+      case 32525:   // Enter
+      case 32521:   // Tab
+      case 32520:   // Backspace
+      case 32639:   // Delete
+      case 32539: { // Escape
         wchar = '\0';
-    } break;
+      } break;
+
+      default: {
+        if (!iswprint(wchar))
+          wchar = '\0';
+      } break;
+      }
+    } else {
+      keysym = XLookupKeysym(&x_event.xkey, 0);
     }
 
     bool is_repeat = window->prev_x_event.xkey.time == x_event.xkey.time &&
