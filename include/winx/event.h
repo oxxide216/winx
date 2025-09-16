@@ -59,6 +59,7 @@ typedef union {
 typedef struct {
   WinxEventKind kind;
   WinxEventAs   as;
+  bool          was_processed;
 } WinxEvent;
 
 WinxEvent winx_get_event(WinxWindow *window, bool wait);
