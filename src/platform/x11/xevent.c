@@ -11,7 +11,7 @@
 #include "../../wstr.h"
 
 WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
-  WinxEvent winx_event = { WinxEventKindNone, {} };
+  WinxEvent winx_event = { WinxEventKindNone, {}, false };
 
   if (!wait && XPending(window->winx->display) == 0)
     return winx_event;
