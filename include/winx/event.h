@@ -30,8 +30,8 @@ typedef enum {
   WinxMouseButtonLeft = 0,
   WinxMouseButtonMiddle,
   WinxMouseButtonRight,
-  WinxMouseButtonSide1,
-  WinxMouseButtonSide2,
+  WinxMouseButtonWheelUp,
+  WinxMouseButtonWheelDown,
   WinxMouseButtonCount,
   WinxMouseButtonUnknown,
 } WinxMouseButton;
