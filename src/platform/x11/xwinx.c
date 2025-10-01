@@ -85,12 +85,9 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
                          XNFocusWindow, window->window,
                          NULL);
 
-  char *cstr_name = name.ptr;
-  if (strlen(cstr_name) != name.len) {
-    u8 *cstr_name = malloc(name.len + 1);
-    memcpy(cstr_name, name.ptr, name.len);
-    cstr_name[name.len] = '\0';
-  }
+  char *cstr_name = malloc(name.len + 1);
+  memcpy(cstr_name, name.ptr, name.len);
+  cstr_name[name.len] = '\0';
 
   XStoreName(winx->display, window->window, cstr_name);
   XMapWindow(winx->display, window->window);
