@@ -18,8 +18,14 @@
                     LeaveWindowMask |    \
                     StructureNotifyMask)
 
+#define WINX_GL_MAJOR_VERSION 3
+#define WINX_GL_MINOR_VERSION 3
+
 typedef struct WinxNative WinxNative;
 typedef struct WinxNativeWindow WinxNativeWindow;
+
+typedef GLXContext (*glXCreateContextAttribsARBProc)(Display *, GLXFBConfig,
+                                                     GLXContext, bool, const i32 *);
 
 WinxNative *winx_native_init(void) {
   WinxNative *winx = malloc(sizeof(WinxNative));
@@ -38,12 +44,49 @@ static XVisualInfo *winx_get_visual_info(WinxNative *winx, WinxGraphicsMode grap
     i32 num_screens = 0;
     return XGetVisualInfo(winx->display, 0, NULL, &num_screens);
   } else if (graphics_mode == WinxGraphicsModeOpenGL) {
-    GLint gl_visual_attributes[] = { GLX_RGBA, GLX_DEPTH_SIZE, 24, GLX_DOUBLEBUFFER, None };
-    return glXChooseVisual(winx->display, 0, gl_visual_attributes);
+    static i32 gl_visual_attributes[] = {
+      GLX_X_RENDERABLE,  True,
+      GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+      GLX_RENDER_TYPE,   GLX_RGBA_BIT,
+      GLX_X_VISUAL_TYPE, GLX_TRUE_COLOR,
+      GLX_RED_SIZE,      8,
+      GLX_GREEN_SIZE,    8,
+      GLX_BLUE_SIZE,     8,
+      GLX_ALPHA_SIZE,    8,
+      GLX_DEPTH_SIZE,    24,
+      GLX_STENCIL_SIZE,  8,
+      GLX_DOUBLEBUFFER,  True,
+      None
+    };
+
+    i32 fb_count;
+    GLXFBConfig* fbc = glXChooseFBConfig(winx->display, winx->screen,
+                                         gl_visual_attributes, &fb_count);
+
+    i32 best_fbc = -1, worst_fbc = -1, best_num_sampler = -1, worst_num_sampler = 999;
+
+    for (u32 i = 0; i < (u32) fb_count; ++i) {
+      XVisualInfo *vi = glXGetVisualFromFBConfig(winx->display, fbc[i]);
+
+      i32 sample_buffer, samples;
+      glXGetFBConfigAttrib(winx->display, fbc[i], GLX_SAMPLE_BUFFERS, &sample_buffer);
+      glXGetFBConfigAttrib(winx->display, fbc[i], GLX_SAMPLES,        &samples);
+
+      if (best_fbc < 0 || (sample_buffer && samples > best_num_sampler))
+        best_fbc = i, best_num_sampler = samples;
+      if (worst_fbc < 0 || !sample_buffer || samples < worst_num_sampler)
+        worst_fbc = i, worst_num_sampler = samples;
+
+      XFree(vi);
+    }
+
+    winx->best_fbc = fbc[best_fbc];
+
+    return glXGetVisualFromFBConfig(winx->display, winx->best_fbc);
   }
 
-    ERROR("Wrong graphics mode\n");
-    exit(1);
+  ERROR("Wrong graphics mode\n");
+  exit(1);
 }
 
 WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
@@ -134,9 +177,19 @@ u32 *winx_native_get_framebuffer(WinxNativeWindow *window) {
 }
 
 void winx_native_init_gl_context(WinxNativeWindow *window) {
-  window->gl_context = glXCreateContext(window->winx->display,
-                                        window->visual_info,
-                                        NULL, GL_TRUE);
+  static i32 context_attributes[] = {
+    GLX_CONTEXT_MAJOR_VERSION_ARB, WINX_GL_MAJOR_VERSION,
+    GLX_CONTEXT_MINOR_VERSION_ARB, WINX_GL_MINOR_VERSION,
+    None,
+  };
+
+  glXCreateContextAttribsARBProc glXCreateContextAttribsARB = 0;
+  glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc)
+           glXGetProcAddressARB((const GLubyte *) "glXCreateContextAttribsARB" );
+
+  window->gl_context = glXCreateContextAttribsARB(window->winx->display, window->winx->best_fbc,
+                                                  0, True, context_attributes);
+
   glXMakeCurrent(window->winx->display, window->window, window->gl_context);
 }
 

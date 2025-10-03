@@ -8,11 +8,12 @@
 #include "../../shl_defs.h"
 
 struct WinxNative {
-  Display *display;
-  i32      screen;
-  Atom     wm_delete_window;
-  XIM      im;
-  XIC      ic;
+  Display     *display;
+  i32          screen;
+  Atom         wm_delete_window;
+  XIM          im;
+  XIC          ic;
+  GLXFBConfig  best_fbc;
 };
 
 struct WinxNativeWindow {
