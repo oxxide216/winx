@@ -110,7 +110,6 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
   XSetWindowAttributes attributes = {
     .colormap = XCreateColormap(winx->display, parent_window,
                                 window->visual_info->visual, AllocNone),
-    .background_pixel = 0,
     .border_pixel = 0,
     .event_mask = EVENT_MASK,
   };
