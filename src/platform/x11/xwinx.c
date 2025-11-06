@@ -118,8 +118,7 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
   window->window = XCreateWindow(winx->display, parent_window,
                                  0, 0, width, height, 0, window->visual_info->depth,
                                  InputOutput, window->visual_info->visual,
-                                 CWBackPixel | CWColormap |
-                                 CWBorderPixel | CWEventMask,
+                                 CWColormap | CWBorderPixel | CWEventMask,
                                  &attributes);
 
   window->ic = XCreateIC(winx->im,

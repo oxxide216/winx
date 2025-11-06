@@ -110,9 +110,6 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
     u32 new_width = x_event.xconfigure.width;
     u32 new_height = x_event.xconfigure.height;
 
-    XResizeWindow(window->winx->display, window->window,
-                  new_width, new_height);
-
     winx_event.kind = WinxEventKindResize;
     winx_event.as.resize = (WinxEventResize) { new_width, new_height };
   } break;
