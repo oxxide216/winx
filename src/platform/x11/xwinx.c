@@ -34,8 +34,6 @@ WinxNative *winx_native_init(void) {
   winx->wm_delete_window = XInternAtom(winx->display, "WM_DELETE_WINDOW", false);
   winx->im = XOpenIM(winx->display, NULL, NULL, NULL);
 
-  XSync(winx->display, false);
-
   return winx;
 }
 
