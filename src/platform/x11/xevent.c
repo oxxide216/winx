@@ -56,15 +56,19 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
       keysym = XLookupKeysym(&x_event.xkey, 0);
     }
 
-    bool is_repeat = window->prev_x_event.xkey.time == x_event.xkey.time &&
+    bool is_repeat = abs((i32) (window->prev_x_event.xkey.time - x_event.xkey.time)) <= 100 &&
                      window->prev_x_event.xkey.keycode == x_event.xkey.keycode;
 
-    if (is_repeat)
+    if (is_repeat) {
+      if (window->prev_x_event.xkey.time != x_event.xkey.time)
+        break;
+
       winx_event.kind = WinxEventKindKeyHold;
-    else if (x_event.type == KeyPress)
+    } else if (x_event.type == KeyPress) {
       winx_event.kind = WinxEventKindKeyPress;
-    else
+    } else {
       winx_event.kind = WinxEventKindKeyRelease;
+    }
 
     winx_event.as.key = (WinxEventKey) {
       keysym_to_key_code(keysym),
