@@ -5,6 +5,7 @@
 #include <GL/glx.h>
 
 #include "../winx.h"
+#include "../../key_code.h"
 #include "../../shl_defs.h"
 
 struct WinxNative {
@@ -27,6 +28,7 @@ struct WinxNativeWindow {
   GLXContext        gl_context;
   XIC               ic;
   XEvent            prev_x_event;
+  u64               is_key_pressed[WinxKeyCodeCount];
 };
 
 #endif // X11_WINX_H

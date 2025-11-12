@@ -1,5 +1,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <X11/XKBlib.h>
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
@@ -33,6 +34,8 @@ WinxNative *winx_native_init(void) {
   winx->screen = DefaultScreen(winx->display);
   winx->wm_delete_window = XInternAtom(winx->display, "WM_DELETE_WINDOW", false);
   winx->im = XOpenIM(winx->display, NULL, NULL, NULL);
+
+  XkbSetDetectableAutoRepeat(winx->display, true, NULL);
 
   return winx;
 }
@@ -92,6 +95,7 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
                                           WinxGraphicsMode graphics_mode,
                                           WinxNativeWindow *parent) {
   WinxNativeWindow *window = malloc(sizeof(WinxNativeWindow));
+  memset(window, 0, sizeof(WinxNativeWindow));
   window->winx = winx;
   window->framebuffer = NULL;
   window->graphics_mode = graphics_mode;

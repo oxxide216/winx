@@ -119,6 +119,7 @@ typedef enum {
   WinxKeyCodeComma,
   WinxKeyCodePeriod,
   WinxKeyCodeSlash,
+  WinxKeyCodeCount,
 } WinxKeyCode;
 
 #endif // KEY_CODE_H
