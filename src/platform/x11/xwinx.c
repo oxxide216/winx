@@ -30,6 +30,7 @@ typedef GLXContext (*glXCreateContextAttribsARBProc)(Display *, GLXFBConfig,
 
 WinxNative *winx_native_init(void) {
   WinxNative *winx = malloc(sizeof(WinxNative));
+  memset(winx, 0, sizeof(WinxNative));
   winx->display = XOpenDisplay(NULL);
   winx->screen = DefaultScreen(winx->display);
   winx->wm_delete_window = XInternAtom(winx->display, "WM_DELETE_WINDOW", false);
@@ -45,6 +46,9 @@ static XVisualInfo *winx_get_visual_info(WinxNative *winx, WinxGraphicsMode grap
     i32 num_screens = 0;
     return XGetVisualInfo(winx->display, 0, NULL, &num_screens);
   } else if (graphics_mode == WinxGraphicsModeOpenGL) {
+    if (winx->fbc)
+      return glXGetVisualFromFBConfig(winx->display, winx->best_fbc);
+
     static i32 gl_visual_attributes[] = {
       GLX_X_RENDERABLE,  True,
       GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
@@ -81,6 +85,7 @@ static XVisualInfo *winx_get_visual_info(WinxNative *winx, WinxGraphicsMode grap
       XFree(vi);
     }
 
+    winx->fbc = fbc;
     winx->best_fbc = fbc[best_fbc];
 
     return glXGetVisualFromFBConfig(winx->display, winx->best_fbc);
@@ -136,6 +141,8 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
   XMapWindow(winx->display, window->window);
   XSetWMProtocols(winx->display, window->window, &winx->wm_delete_window, 1);
 
+  free(cstr_name);
+
   u64 gcm = GCGraphicsExposures;
   XGCValues gcv;
   gcv.graphics_exposures = 0;
@@ -161,8 +168,10 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
 }
 
 void winx_native_init_framebuffer(WinxNativeWindow *window, u32 width, u32 height) {
-  if (window->framebuffer)
+  if (window->framebuffer) {
     free(window->framebuffer);
+    XDestroyImage(window->image);
+  }
 
   u32 len = width * height;
   window->framebuffer = malloc(len * sizeof(u32));
@@ -203,17 +212,22 @@ void winx_native_draw(WinxNativeWindow *window, u32 width, u32 height) {
 
 void winx_native_destroy_window(WinxNativeWindow *window) {
   if (window->graphics_mode == WinxGraphicsModeFramebuffer) {
-    XDestroyImage(window->image);
+    free(window->framebuffer);
+    if (window->image)
+      XDestroyImage(window->image);
   } else if (window->graphics_mode == WinxGraphicsModeOpenGL) {
     glXMakeCurrent(window->winx->display, None, NULL);
     glXDestroyContext(window->winx->display, window->gl_context);
+    glXDestroyWindow(window->winx->display, window->window);
   }
 
+  XFree(window->visual_info);
   XFreeGC(window->winx->display, window->graphic_context);
   XUnmapWindow(window->winx->display, window->window);
   XDestroyWindow(window->winx->display, window->window);
 }
 
 void winx_native_cleanup(WinxNative *winx) {
+  XFree(winx->fbc);
   XCloseDisplay(winx->display);
 }

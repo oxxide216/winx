@@ -4,7 +4,7 @@
 #include "platform/winx.h"
 
 Winx winx_init(void) {
-  Winx winx;
+  Winx winx = {0};
   winx.native = winx_native_init();
   return winx;
 }
@@ -13,7 +13,7 @@ WinxWindow winx_init_window(Winx *winx, Str name,
                             u32 width, u32 height,
                             WinxGraphicsMode graphics_mode,
                             WinxWindow *parent) {
-  WinxWindow window;
+  WinxWindow window = {0};
   window.name = name;
   window.width = width;
   window.height = height;

@@ -28,7 +28,7 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
     WChar wchar = '\0';
 
     if (x_event.type == KeyPress) {
-      char key_name[4];
+      char key_name[4] = {0};
       x_event.xkey.state &= ~ControlMask;
 
       Status status;

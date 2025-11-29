@@ -14,6 +14,7 @@ struct WinxNative {
   Atom         wm_delete_window;
   XIM          im;
   XIC          ic;
+  GLXFBConfig *fbc;
   GLXFBConfig  best_fbc;
 };
 
