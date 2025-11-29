@@ -218,7 +218,6 @@ void winx_native_destroy_window(WinxNativeWindow *window) {
   } else if (window->graphics_mode == WinxGraphicsModeOpenGL) {
     glXMakeCurrent(window->winx->display, None, NULL);
     glXDestroyContext(window->winx->display, window->gl_context);
-    glXDestroyWindow(window->winx->display, window->window);
   }
 
   XFree(window->visual_info);
