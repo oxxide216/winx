@@ -1,4 +1,4 @@
-#include "event.h"
+#include "winx/event.h"
 #include "platform/event.h"
 
 WinxEvent winx_get_event(WinxWindow *window, bool wait) {
