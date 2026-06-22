@@ -7,7 +7,7 @@ WinxEvent winx_get_event(WinxWindow *window, bool wait) {
   if (event.kind == WinxEventKindResize) {
     window->width = event.as.resize.width;
     window->height = event.as.resize.height;
-    if (window->framebuffer)
+    if (winx_get_framebuffer(window))
       winx_init_framebuffer(window);
   }
 

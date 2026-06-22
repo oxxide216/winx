@@ -168,13 +168,10 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
 }
 
 void winx_native_init_framebuffer(WinxNativeWindow *window, u32 width, u32 height) {
-  if (window->framebuffer) {
-    free(window->framebuffer);
+  if (window->framebuffer)
     XDestroyImage(window->image);
-  }
 
-  u32 len = width * height;
-  window->framebuffer = malloc(len * sizeof(u32));
+  window->framebuffer = malloc(width * height * sizeof(u32));
   window->image = XCreateImage(window->winx->display, window->visual_info->visual,
                                window->visual_info->depth, ZPixmap,
                                0, (char *) window->framebuffer,
@@ -212,7 +209,6 @@ void winx_native_draw(WinxNativeWindow *window, u32 width, u32 height) {
 
 void winx_native_destroy_window(WinxNativeWindow *window) {
   if (window->graphics_mode == WinxGraphicsModeFramebuffer) {
-    free(window->framebuffer);
     if (window->image)
       XDestroyImage(window->image);
   } else if (window->graphics_mode == WinxGraphicsModeOpenGL) {
