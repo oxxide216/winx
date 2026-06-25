@@ -17,3 +17,5 @@ void              winx_native_init_gl_context(WinxNativeWindow *window);
 void              winx_native_draw(WinxNativeWindow *window, u32 width, u32 height);
 void              winx_native_destroy_window(WinxNativeWindow *window);
 void              winx_native_cleanup(WinxNative *winx);
+
+WinxApiProc winx_native_load_proc_address(char *name);

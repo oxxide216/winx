@@ -1,5 +1,6 @@
 #include <locale.h>
 
+#include "winx/winx.h"
 #include "wwinx.h"
 #include "../../wstr.h"
 #include "../../shl_defs.h"
@@ -148,4 +149,8 @@ void winx_native_destroy_window(WinxNativeWindow *window) {
 
 void winx_native_cleanup(WinxNative *winx) {
   UnregisterClassW(WINDOW_CLASS_NAME, winx->instance);
+}
+
+WinxApiProc winx_native_load_proc_address(char *name) {
+  return (WinxApiProc) wglGetProcAddress(name);
 }

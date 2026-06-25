@@ -19,6 +19,8 @@ typedef struct {
   WinxNativeWindow *native;
 } WinxWindow;
 
+typedef void (*WinxApiProc)(void);
+
 Winx       *winx_init(void);
 WinxWindow *winx_init_window(Winx *winx, Str name,
                              u32 width, u32 height,
@@ -29,5 +31,7 @@ u32        *winx_get_framebuffer(WinxWindow *window);
 void        winx_draw(WinxWindow *window);
 void        winx_destroy_window(WinxWindow *window);
 void        winx_cleanup(Winx *winx);
+
+WinxApiProc winx_load_proc_address(char *name);
 
 #endif // WINX_H

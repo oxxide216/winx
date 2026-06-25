@@ -5,6 +5,7 @@
 #include <string.h>
 #include <locale.h>
 
+#include "winx/winx.h"
 #include "xwinx.h"
 #include "../../shl_defs.h"
 #include "../../shl_str.h"
@@ -225,4 +226,8 @@ void winx_native_destroy_window(WinxNativeWindow *window) {
 void winx_native_cleanup(WinxNative *winx) {
   XFree(winx->fbc);
   XCloseDisplay(winx->display);
+}
+
+WinxApiProc winx_native_load_proc_address(char *name) {
+  return glXGetProcAddress((u8 *) name);
 }
