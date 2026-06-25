@@ -32,6 +32,6 @@ void        winx_draw(WinxWindow *window);
 void        winx_destroy_window(WinxWindow *window);
 void        winx_cleanup(Winx *winx);
 
-WinxApiProc winx_load_proc_address(char *name);
+WinxApiProc winx_load_proc_address(const char *name);
 
 #endif // WINX_H
