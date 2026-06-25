@@ -1,4 +1,5 @@
 #include "winx/event.h"
+#include "platform/winx.h"
 #include "platform/event.h"
 
 WinxEvent winx_get_event(WinxWindow *window, bool wait) {
@@ -8,7 +9,9 @@ WinxEvent winx_get_event(WinxWindow *window, bool wait) {
     window->width = event.as.resize.width;
     window->height = event.as.resize.height;
     if (winx_get_framebuffer(window))
-      winx_init_framebuffer(window);
+      winx_native_init_framebuffer(window->native,
+                                   window->width,
+                                   window->height);
   }
 
   return event;

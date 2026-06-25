@@ -197,7 +197,10 @@ void winx_native_init_gl_context(WinxNativeWindow *window) {
 
   window->gl_context = glXCreateContextAttribsARB(window->winx->display, window->winx->best_fbc,
                                                   0, True, context_attributes);
+  glXMakeCurrent(window->winx->display, window->window, window->gl_context);
+}
 
+void winx_native_make_context_current(WinxNativeWindow *window) {
   glXMakeCurrent(window->winx->display, window->window, window->gl_context);
 }
 

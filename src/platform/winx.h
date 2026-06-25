@@ -15,6 +15,7 @@ void              winx_native_init_framebuffer(WinxNativeWindow *window,
                                                u32 width, u32 height);
 u32              *winx_native_get_framebuffer(WinxNativeWindow *window);
 void              winx_native_init_gl_context(WinxNativeWindow *window);
+void              winx_native_make_context_current(WinxNativeWindow *window);
 void              winx_native_draw(WinxNativeWindow *window, u32 width, u32 height);
 void              winx_native_destroy_window(WinxNativeWindow *window);
 void              winx_native_cleanup(WinxNative *winx);

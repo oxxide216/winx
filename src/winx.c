@@ -40,12 +40,12 @@ WinxWindow *winx_init_window(Winx *winx, Str name,
   return window;
 }
 
-void winx_init_framebuffer(WinxWindow *window) {
-  winx_native_init_framebuffer(window->native, window->width, window->height);
-}
-
 u32 *winx_get_framebuffer(WinxWindow *window) {
   return winx_native_get_framebuffer(window->native);
+}
+
+void winx_make_context_current(WinxWindow *window) {
+  winx_native_make_context_current(window->native);
 }
 
 void winx_draw(WinxWindow *window) {

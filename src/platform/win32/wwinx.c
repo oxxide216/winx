@@ -12,6 +12,23 @@
 typedef struct WinxNative WinxNative;
 typedef struct WinxNativeWindow WinxNativeWindow;
 
+typedef HGLRC (WINAPI *WglCreateContextAttribsARBProc)(HDC device_ctx,
+                                                       HGLRC gl_context,
+                                                       const i32 *attribs);
+
+typedef HRESULT (APIENTRY *WglChoosePixelFormatARBProc)(HDC device_ctx,
+                                                        const i32 *i_attribs,
+                                                        const FLOAT *f_attribs,
+                                                        UINT max_formats,
+                                                        i32 *formats,
+                                                        UINT *num_formats);
+
+typedef BOOL(APIENTRY *WglSwapIntervalEXTProc)(i32 interval);
+
+static WglCreateContextAttribsARBProc wglCreateContextAttribsARB = NULL;
+static WglChoosePixelFormatARBProc wglChoosePixelFormatARB = NULL;
+static WglSwapIntervalEXTProc wglSwapIntervalEXT = NULL;
+
 LRESULT CALLBACK window_proc(HWND window, UINT message, WPARAM w_param, LPARAM l_param);
 
 WinxNative *winx_native_init(void) {
@@ -117,12 +134,64 @@ void winx_native_init_gl_context(WinxNativeWindow *window) {
   desc.iPixelType = PFD_TYPE_RGBA;
   desc.cColorBits = 32;
   desc.cAlphaBits = 8;
+  desc.cDepthBits = 32;
   desc.iLayerType = PFD_MAIN_PLANE;
 
   i32 pixel_format = ChoosePixelFormat(window->device_ctx, &desc);
   SetPixelFormat(window->device_ctx, pixel_format, &desc);
 
-  window->gl_context = wglCreateContext(window->device_ctx);
+  HGLRC temp_gl_context = wglCreateContext(window->device_ctx);
+  wglMakeCurrent(window->device_ctx, temp_gl_context);
+
+  wglCreateContextAttribsARB =
+    (WglCreateContextAttribsARBProc) (void *)
+      wglGetProcAddress("wglCreateContextAttribsARB");
+  wglChoosePixelFormatARB =
+    (WglChoosePixelFormatARBProc) (void *)
+      wglGetProcAddress("wglChoosePixelFormatARB");
+  wglSwapIntervalEXT =
+    (WglSwapIntervalEXTProc) (void *)
+      wglGetProcAddress("wglSwapIntervalEXT");
+
+  wglMakeCurrent(window->device_ctx, 0);
+  wglDeleteContext(temp_gl_context);
+
+  static i32 attribs[] = {
+    0x2003, // WGL_ACCELERATION_ARB
+    0x2027, // WGL_FULL_ACCELERATION_ARB
+    0x201b, 8, // WGL_ALPHA_BITS_ARB
+    0x2022, 32, // WGL_DEPTH_BITS_ARB
+    0x2001, 1, // WGL_DRAW_TO_WINDOW_ARB
+    0x2015, 8, // WGL_RED_BITS_ARB
+    0x2017, 8, // WGL_GREEN_BITS_ARB
+    0x2019, 8, // WGL_BLUE_BITS_ARB
+    0x2013, 0x202B, // WGL_PIXEL_TYPE_ARB,  WGL_TYPE_RGBA_ARB
+    0x2010,1, // WGL_SUPPORT_OPENGL_ARB
+    0x2014, 32, // WGL_COLOR_BITS_ARB
+    0x2011, 1, // Double buffer
+    0,
+  };
+
+  UINT num_formats;
+  wglChoosePixelFormatARB(window->device_ctx, attribs, 0, 1, &pixel_format, &num_formats);
+  DescribePixelFormat(window->device_ctx, pixel_format, sizeof(desc), &desc);
+  SetPixelFormat(window->device_ctx, pixel_format, &desc);
+
+  i32 context_attribs[] = {
+    0x9126, // WGL_CONTEXT_PROFILE_MASK_ARB
+    1, // WGL_CONTEXT_CORE_PROFILE_BIT_ARB
+    0x2091, // WGL_CONTEXT_MAJOR_VERSION_ARB
+    WINX_GL_MAJOR_VERSION,
+    0x2092, // WGL_CONTEXT_MINOR_VERSION_ARB
+    WINX_GL_MINOR_VERSION,
+    0, 0,
+  };
+
+  window->gl_context = wglCreateContextAttribsARB(window->device_ctx, NULL, context_attribs);
+  wglMakeCurrent(window->device_ctx, window->gl_context);
+}
+
+void winx_native_make_context_current(WinxNativeWindow *window) {
   wglMakeCurrent(window->device_ctx, window->gl_context);
 }
 
