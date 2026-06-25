@@ -8,9 +8,9 @@ else ifeq ($(PLATFORM), WINDOWS)
   CC = x86_64-w64-mingw32-gcc
 endif
 override CFLAGS += -Wall -Wextra -Iinclude
-ifeq ($(PLATFORM), X11)
+ifeq ($(PLATFORM), LINUX)
   override LDFLAGS += -lX11 -lGL
-else ifeq ($(PLATFORM), WIN32)
+else ifeq ($(PLATFORM), WINDOWS)
   override LDFLAGS += -lopengl32 -lgdi32
 endif
 BUILD_DIR = build

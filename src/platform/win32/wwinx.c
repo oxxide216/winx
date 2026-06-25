@@ -151,6 +151,6 @@ void winx_native_cleanup(WinxNative *winx) {
   UnregisterClassW(WINDOW_CLASS_NAME, winx->instance);
 }
 
-WinxApiProc winx_native_load_proc_address(char *name) {
+WinxApiProc winx_native_load_proc_address(const char *name) {
   return (WinxApiProc) wglGetProcAddress(name);
 }

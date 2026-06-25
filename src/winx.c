@@ -62,6 +62,6 @@ void winx_cleanup(Winx *winx) {
   free(winx->native);
 }
 
-WinxApiProc winx_load_proc_address(char *name) {
+WinxApiProc winx_load_proc_address(const char *name) {
   return winx_native_load_proc_address(name);
 }

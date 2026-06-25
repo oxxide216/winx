@@ -1,3 +1,4 @@
+#include "winx/winx.h"
 #include "../graphics-mode.h"
 #include "../shl_defs.h"
 #include "../shl_str.h"
@@ -18,4 +19,4 @@ void              winx_native_draw(WinxNativeWindow *window, u32 width, u32 heig
 void              winx_native_destroy_window(WinxNativeWindow *window);
 void              winx_native_cleanup(WinxNative *winx);
 
-WinxApiProc winx_native_load_proc_address(char *name);
+WinxApiProc winx_native_load_proc_address(const char *name);

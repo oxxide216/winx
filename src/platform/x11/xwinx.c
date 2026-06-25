@@ -228,6 +228,6 @@ void winx_native_cleanup(WinxNative *winx) {
   XCloseDisplay(winx->display);
 }
 
-WinxApiProc winx_native_load_proc_address(char *name) {
-  return glXGetProcAddress((u8 *) name);
+WinxApiProc winx_native_load_proc_address(const char *name) {
+  return glXGetProcAddress((const u8 *) name);
 }
