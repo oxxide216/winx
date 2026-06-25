@@ -1,10 +1,10 @@
 .RECIPEPREFIX = >
 
-PLATFORM = X11
+PLATFORM = LINUX
 
-ifeq ($(PLATFORM), X11)
+ifeq ($(PLATFORM), LINUX)
   CC = cc
-else ifeq ($(PLATFORM), WIN32)
+else ifeq ($(PLATFORM), WINDOWS)
   CC = x86_64-w64-mingw32-gcc
 endif
 override CFLAGS += -Wall -Wextra -Iinclude
@@ -16,29 +16,29 @@ endif
 BUILD_DIR = build
 
 SRC = $(wildcard src/*.c)
-ifeq ($(PLATFORM), X11)
+ifeq ($(PLATFORM), LINUX)
   PLATFORM_SRC = $(wildcard src/platform/x11/*.c)
-else ifeq ($(PLATFORM), WIN32)
+else ifeq ($(PLATFORM), WINDOWS)
   PLATFORM_SRC = $(wildcard src/platform/win32/*.c)
 endif
 TESTS_SRC = $(wildcard tests/*.c)
 
-ifeq ($(PLATFORM), X11)
+ifeq ($(PLATFORM), LINUX)
   OBJ = $(patsubst src/%.c,$(BUILD_DIR)/%.o,$(SRC))
   PLATFORM_OBJ = $(patsubst src/%.c,$(BUILD_DIR)/%.o,$(PLATFORM_SRC))
 
   TESTS_EXECS = $(patsubst tests/%.c,$(BUILD_DIR)/tests/%,$(TESTS_SRC))
-else ifeq ($(PLATFORM), WIN32)
+else ifeq ($(PLATFORM), WINDOWS)
   OBJ = $(patsubst src/%.c,$(BUILD_DIR)/%.obj,$(SRC))
   PLATFORM_OBJ = $(patsubst src/%.c,$(BUILD_DIR)/%.obj,$(PLATFORM_SRC))
 
   TESTS_EXECS = $(patsubst tests/%.c,$(BUILD_DIR)/tests/%.exe,$(TESTS_SRC))
 endif
 
-ifeq ($(PLATFORM), X11)
+ifeq ($(PLATFORM), LINUX)
 libwinx.a: $(OBJ) $(PLATFORM_OBJ)
 > ar rcs libwinx.a $(OBJ) $(PLATFORM_OBJ)
-else ifeq ($(PLATFORM), WIN32)
+else ifeq ($(PLATFORM), WINDOWS)
 libwinx.lib: $(OBJ) $(PLATFORM_OBJ)
 > x86_64-w64-mingw32-ar rcs libwinx.lib $(OBJ) $(PLATFORM_OBJ)
 endif
