@@ -166,7 +166,7 @@ void winx_native_init_gl_context(WinxNativeWindow *window) {
     0x2017, 8, // WGL_GREEN_BITS_ARB
     0x2019, 8, // WGL_BLUE_BITS_ARB
     0x2013, 0x202B, // WGL_PIXEL_TYPE_ARB,  WGL_TYPE_RGBA_ARB
-    0x2010,1, // WGL_SUPPORT_OPENGL_ARB
+    0x2010, 1, // WGL_SUPPORT_OPENGL_ARB
     0x2014, 32, // WGL_COLOR_BITS_ARB
     0x2011, 1, // Double buffer
     0,
@@ -178,13 +178,10 @@ void winx_native_init_gl_context(WinxNativeWindow *window) {
   SetPixelFormat(window->device_ctx, pixel_format, &desc);
 
   i32 context_attribs[] = {
-    0x9126, // WGL_CONTEXT_PROFILE_MASK_ARB
-    1, // WGL_CONTEXT_CORE_PROFILE_BIT_ARB
-    0x2091, // WGL_CONTEXT_MAJOR_VERSION_ARB
-    WINX_GL_MAJOR_VERSION,
-    0x2092, // WGL_CONTEXT_MINOR_VERSION_ARB
-    WINX_GL_MINOR_VERSION,
-    0, 0,
+    0x9126, 1, // WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB
+    0x2091, WINX_GL_MAJOR_VERSION, // WGL_CONTEXT_MAJOR_VERSION_ARB
+    0x2092, WINX_GL_MINOR_VERSION, // WGL_CONTEXT_MINOR_VERSION_ARB
+    0,
   };
 
   window->gl_context = wglCreateContextAttribsARB(window->device_ctx, NULL, context_attribs);
