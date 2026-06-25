@@ -19,9 +19,6 @@
                     LeaveWindowMask |    \
                     StructureNotifyMask)
 
-#define WINX_GL_MAJOR_VERSION 3
-#define WINX_GL_MINOR_VERSION 3
-
 typedef struct WinxNative WinxNative;
 typedef struct WinxNativeWindow WinxNativeWindow;
 
@@ -29,14 +26,21 @@ typedef GLXContext (*glXCreateContextAttribsARBProc)(Display *, GLXFBConfig,
                                                      GLXContext, bool, const i32 *);
 
 WinxNative *winx_native_init(void) {
+  Display *display = XOpenDisplay(NULL);
+
+  if (!display)
+    return NULL;
+
   WinxNative *winx = malloc(sizeof(WinxNative));
   memset(winx, 0, sizeof(WinxNative));
-  winx->display = XOpenDisplay(NULL);
+  winx->display = display;
   winx->screen = DefaultScreen(winx->display);
   winx->wm_delete_window = XInternAtom(winx->display, "WM_DELETE_WINDOW", false);
   winx->im = XOpenIM(winx->display, NULL, NULL, NULL);
 
   XkbSetDetectableAutoRepeat(winx->display, true, NULL);
+
+  setlocale(LC_ALL, "");
 
   return winx;
 }
@@ -102,7 +106,6 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
   WinxNativeWindow *window = malloc(sizeof(WinxNativeWindow));
   memset(window, 0, sizeof(WinxNativeWindow));
   window->winx = winx;
-  window->framebuffer = NULL;
   window->graphics_mode = graphics_mode;
   window->visual_info = winx_get_visual_info(winx, graphics_mode);
 
@@ -162,8 +165,6 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
                          XNClientWindow, window->window, XNFocusWindow, window->window, NULL);
   XSetICFocus(window->ic);
 
-  setlocale(LC_ALL, "");
-
   return window;
 }
 
@@ -209,8 +210,7 @@ void winx_native_draw(WinxNativeWindow *window, u32 width, u32 height) {
 
 void winx_native_destroy_window(WinxNativeWindow *window) {
   if (window->graphics_mode == WinxGraphicsModeFramebuffer) {
-    if (window->image)
-      XDestroyImage(window->image);
+    XDestroyImage(window->image);
   } else if (window->graphics_mode == WinxGraphicsModeOpenGL) {
     glXMakeCurrent(window->winx->display, None, NULL);
     glXDestroyContext(window->winx->display, window->gl_context);

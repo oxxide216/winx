@@ -2,149 +2,149 @@
 
 WinxKeyCode keysym_to_key_code(KeySym keysym) {
   switch (keysym) {
-    case 0x0020: return WinxKeyCodeSpace;
-    case 0x0027: return WinxKeyCodeApostrophe;
-    case 0x002c: return WinxKeyCodeComma;
-    case 0x002d: return WinxKeyCodeMinus;
-    case 0x002e: return WinxKeyCodePeriod;
-    case 0x002f: return WinxKeyCodeSlash;
-    case 0x0030: return WinxKeyCode0;
-    case 0x0031: return WinxKeyCode1;
-    case 0x0032: return WinxKeyCode2;
-    case 0x0033: return WinxKeyCode3;
-    case 0x0034: return WinxKeyCode4;
-    case 0x0035: return WinxKeyCode5;
-    case 0x0036: return WinxKeyCode6;
-    case 0x0037: return WinxKeyCode7;
-    case 0x0038: return WinxKeyCode8;
-    case 0x0039: return WinxKeyCode9;
-    case 0x003b: return WinxKeyCodeSemicolon;
-    case 0x003d: return WinxKeyCodeEqual;
-    case 0x0061:
-    case 0x0041: return WinxKeyCodeA;
-    case 0x0062:
-    case 0x0042: return WinxKeyCodeB;
-    case 0x0063:
-    case 0x0043: return WinxKeyCodeC;
-    case 0x0064:
-    case 0x0044: return WinxKeyCodeD;
-    case 0x0065:
-    case 0x0045: return WinxKeyCodeE;
-    case 0x0066:
-    case 0x0046: return WinxKeyCodeF;
-    case 0x0067:
-    case 0x0047: return WinxKeyCodeG;
-    case 0x0068:
-    case 0x0048: return WinxKeyCodeH;
-    case 0x0069:
-    case 0x0049: return WinxKeyCodeI;
-    case 0x006a:
-    case 0x004a: return WinxKeyCodeJ;
-    case 0x006b:
-    case 0x004b: return WinxKeyCodeK;
-    case 0x006c:
-    case 0x004c: return WinxKeyCodeL;
-    case 0x006d:
-    case 0x004d: return WinxKeyCodeM;
-    case 0x006e:
-    case 0x004e: return WinxKeyCodeN;
-    case 0x006f:
-    case 0x004f: return WinxKeyCodeO;
-    case 0x0070:
-    case 0x0050: return WinxKeyCodeP;
-    case 0x0071:
-    case 0x0051: return WinxKeyCodeQ;
-    case 0x0072:
-    case 0x0052: return WinxKeyCodeR;
-    case 0x0073:
-    case 0x0053: return WinxKeyCodeS;
-    case 0x0074:
-    case 0x0054: return WinxKeyCodeT;
-    case 0x0075:
-    case 0x0055: return WinxKeyCodeU;
-    case 0x0076:
-    case 0x0056: return WinxKeyCodeV;
-    case 0x0077:
-    case 0x0057: return WinxKeyCodeW;
-    case 0x0078:
-    case 0x0058: return WinxKeyCodeX;
-    case 0x0079:
-    case 0x0059: return WinxKeyCodeY;
-    case 0x007a:
-    case 0x005a: return WinxKeyCodeZ;
-    case 0x005b: return WinxKeyCodeLeftBracket;
-    case 0x005c: return WinxKeyCodeBackslash;
-    case 0x005d: return WinxKeyCodeRightBracket;
-    case 0x0ff1b: return WinxKeyCodeEscape;
-    case 0xff0d: return WinxKeyCodeEnter;
-    case 0xff09: return WinxKeyCodeTab;
-    case 0xff08: return WinxKeyCodeBackspace;
-    case 0xff63: return WinxKeyCodeInsert;
-    case 0xffff: return WinxKeyCodeDelete;
-    case 0xff53: return WinxKeyCodeRight;
-    case 0xff51: return WinxKeyCodeLeft;
-    case 0xff54: return WinxKeyCodeDown;
-    case 0xff52: return WinxKeyCodeUp;
-    case 0xff55: return WinxKeyCodePageUp;
-    case 0xff56: return WinxKeyCodePageDown;
-    case 0xff50: return WinxKeyCodeHome;
-    case 0xff57: return WinxKeyCodeEnd;
-    case 0xffe5: return WinxKeyCodeCapsLock;
-    case 0xff14: return WinxKeyCodeScrollLock;
-    case 0xff7f: return WinxKeyCodeNumLock;
-    case 0xfd1d: return WinxKeyCodePrintScreen;
-    case 0xff13: return WinxKeyCodePause;
-    case 0xffbe: return WinxKeyCodeF1;
-    case 0xffbf: return WinxKeyCodeF2;
-    case 0xffc0: return WinxKeyCodeF3;
-    case 0xffc1: return WinxKeyCodeF4;
-    case 0xffc2: return WinxKeyCodeF5;
-    case 0xffc3: return WinxKeyCodeF6;
-    case 0xffc4: return WinxKeyCodeF7;
-    case 0xffc5: return WinxKeyCodeF8;
-    case 0xffc6: return WinxKeyCodeF9;
-    case 0xffc7: return WinxKeyCodeF10;
-    case 0xffc8: return WinxKeyCodeF11;
-    case 0xffc9: return WinxKeyCodeF12;
-    case 0xffca: return WinxKeyCodeF13;
-    case 0xffcb: return WinxKeyCodeF14;
-    case 0xffcc: return WinxKeyCodeF15;
-    case 0xffcd: return WinxKeyCodeF16;
-    case 0xffce: return WinxKeyCodeF17;
-    case 0xffcf: return WinxKeyCodeF18;
-    case 0xffd0: return WinxKeyCodeF19;
-    case 0xffd1: return WinxKeyCodeF20;
-    case 0xffd2: return WinxKeyCodeF21;
-    case 0xffd3: return WinxKeyCodeF22;
-    case 0xffd4: return WinxKeyCodeF23;
-    case 0xffd5: return WinxKeyCodeF24;
-    case 0xffd8: return WinxKeyCodeF25;
-    case 0xffb0: return WinxKeyCodeKp0;
-    case 0xffb1: return WinxKeyCodeKp1;
-    case 0xffb2: return WinxKeyCodeKp2;
-    case 0xffb3: return WinxKeyCodeKp3;
-    case 0xffb4: return WinxKeyCodeKp4;
-    case 0xffb5: return WinxKeyCodeKp5;
-    case 0xffb6: return WinxKeyCodeKp6;
-    case 0xffb7: return WinxKeyCodeKp7;
-    case 0xffb8: return WinxKeyCodeKp8;
-    case 0xffb9: return WinxKeyCodeKp9;
-    case 0xffae: return WinxKeyCodeKpDecimal;
-    case 0xffaf: return WinxKeyCodeKpDivide;
-    case 0xffaa: return WinxKeyCodeKpMultiply;
-    case 0xffad: return WinxKeyCodeKpSubtract;
-    case 0xffab: return WinxKeyCodeKpAdd;
-    case 0xff8d: return WinxKeyCodeKpEnter;
-    case 0xffbd: return WinxKeyCodeKpEqual;
-    case 0xffe1: return WinxKeyCodeLeftShift;
-    case 0xffe3: return WinxKeyCodeLeftControl;
-    case 0xffe9: return WinxKeyCodeLeftAlt;
-    case 0xffeb: return WinxKeyCodeLeftSuper;
-    case 0xffe2: return WinxKeyCodeRightShift;
-    case 0xffe4: return WinxKeyCodeRightControl;
-    case 0xffea: return WinxKeyCodeRightAlt;
-    case 0xffec: return WinxKeyCodeRightSuper;
-    case 0xff67: return WinxKeyCodeMenu;
-    default:     return 0;
+  case 0x0020: return WinxKeyCodeSpace;
+  case 0x0027: return WinxKeyCodeApostrophe;
+  case 0x002c: return WinxKeyCodeComma;
+  case 0x002d: return WinxKeyCodeMinus;
+  case 0x002e: return WinxKeyCodePeriod;
+  case 0x002f: return WinxKeyCodeSlash;
+  case 0x0030: return WinxKeyCode0;
+  case 0x0031: return WinxKeyCode1;
+  case 0x0032: return WinxKeyCode2;
+  case 0x0033: return WinxKeyCode3;
+  case 0x0034: return WinxKeyCode4;
+  case 0x0035: return WinxKeyCode5;
+  case 0x0036: return WinxKeyCode6;
+  case 0x0037: return WinxKeyCode7;
+  case 0x0038: return WinxKeyCode8;
+  case 0x0039: return WinxKeyCode9;
+  case 0x003b: return WinxKeyCodeSemicolon;
+  case 0x003d: return WinxKeyCodeEqual;
+  case 0x0061:
+  case 0x0041: return WinxKeyCodeA;
+  case 0x0062:
+  case 0x0042: return WinxKeyCodeB;
+  case 0x0063:
+  case 0x0043: return WinxKeyCodeC;
+  case 0x0064:
+  case 0x0044: return WinxKeyCodeD;
+  case 0x0065:
+  case 0x0045: return WinxKeyCodeE;
+  case 0x0066:
+  case 0x0046: return WinxKeyCodeF;
+  case 0x0067:
+  case 0x0047: return WinxKeyCodeG;
+  case 0x0068:
+  case 0x0048: return WinxKeyCodeH;
+  case 0x0069:
+  case 0x0049: return WinxKeyCodeI;
+  case 0x006a:
+  case 0x004a: return WinxKeyCodeJ;
+  case 0x006b:
+  case 0x004b: return WinxKeyCodeK;
+  case 0x006c:
+  case 0x004c: return WinxKeyCodeL;
+  case 0x006d:
+  case 0x004d: return WinxKeyCodeM;
+  case 0x006e:
+  case 0x004e: return WinxKeyCodeN;
+  case 0x006f:
+  case 0x004f: return WinxKeyCodeO;
+  case 0x0070:
+  case 0x0050: return WinxKeyCodeP;
+  case 0x0071:
+  case 0x0051: return WinxKeyCodeQ;
+  case 0x0072:
+  case 0x0052: return WinxKeyCodeR;
+  case 0x0073:
+  case 0x0053: return WinxKeyCodeS;
+  case 0x0074:
+  case 0x0054: return WinxKeyCodeT;
+  case 0x0075:
+  case 0x0055: return WinxKeyCodeU;
+  case 0x0076:
+  case 0x0056: return WinxKeyCodeV;
+  case 0x0077:
+  case 0x0057: return WinxKeyCodeW;
+  case 0x0078:
+  case 0x0058: return WinxKeyCodeX;
+  case 0x0079:
+  case 0x0059: return WinxKeyCodeY;
+  case 0x007a:
+  case 0x005a: return WinxKeyCodeZ;
+  case 0x005b: return WinxKeyCodeLeftBracket;
+  case 0x005c: return WinxKeyCodeBackslash;
+  case 0x005d: return WinxKeyCodeRightBracket;
+  case 0xff1b: return WinxKeyCodeEscape;
+  case 0xff0d: return WinxKeyCodeEnter;
+  case 0xff09: return WinxKeyCodeTab;
+  case 0xff08: return WinxKeyCodeBackspace;
+  case 0xff63: return WinxKeyCodeInsert;
+  case 0xffff: return WinxKeyCodeDelete;
+  case 0xff53: return WinxKeyCodeRight;
+  case 0xff51: return WinxKeyCodeLeft;
+  case 0xff54: return WinxKeyCodeDown;
+  case 0xff52: return WinxKeyCodeUp;
+  case 0xff55: return WinxKeyCodePageUp;
+  case 0xff56: return WinxKeyCodePageDown;
+  case 0xff50: return WinxKeyCodeHome;
+  case 0xff57: return WinxKeyCodeEnd;
+  case 0xffe5: return WinxKeyCodeCapsLock;
+  case 0xff14: return WinxKeyCodeScrollLock;
+  case 0xff7f: return WinxKeyCodeNumLock;
+  case 0xfd1d: return WinxKeyCodePrintScreen;
+  case 0xff13: return WinxKeyCodePause;
+  case 0xffbe: return WinxKeyCodeF1;
+  case 0xffbf: return WinxKeyCodeF2;
+  case 0xffc0: return WinxKeyCodeF3;
+  case 0xffc1: return WinxKeyCodeF4;
+  case 0xffc2: return WinxKeyCodeF5;
+  case 0xffc3: return WinxKeyCodeF6;
+  case 0xffc4: return WinxKeyCodeF7;
+  case 0xffc5: return WinxKeyCodeF8;
+  case 0xffc6: return WinxKeyCodeF9;
+  case 0xffc7: return WinxKeyCodeF10;
+  case 0xffc8: return WinxKeyCodeF11;
+  case 0xffc9: return WinxKeyCodeF12;
+  case 0xffca: return WinxKeyCodeF13;
+  case 0xffcb: return WinxKeyCodeF14;
+  case 0xffcc: return WinxKeyCodeF15;
+  case 0xffcd: return WinxKeyCodeF16;
+  case 0xffce: return WinxKeyCodeF17;
+  case 0xffcf: return WinxKeyCodeF18;
+  case 0xffd0: return WinxKeyCodeF19;
+  case 0xffd1: return WinxKeyCodeF20;
+  case 0xffd2: return WinxKeyCodeF21;
+  case 0xffd3: return WinxKeyCodeF22;
+  case 0xffd4: return WinxKeyCodeF23;
+  case 0xffd5: return WinxKeyCodeF24;
+  case 0xffd8: return WinxKeyCodeF25;
+  case 0xffb0: return WinxKeyCodeKp0;
+  case 0xffb1: return WinxKeyCodeKp1;
+  case 0xffb2: return WinxKeyCodeKp2;
+  case 0xffb3: return WinxKeyCodeKp3;
+  case 0xffb4: return WinxKeyCodeKp4;
+  case 0xffb5: return WinxKeyCodeKp5;
+  case 0xffb6: return WinxKeyCodeKp6;
+  case 0xffb7: return WinxKeyCodeKp7;
+  case 0xffb8: return WinxKeyCodeKp8;
+  case 0xffb9: return WinxKeyCodeKp9;
+  case 0xffae: return WinxKeyCodeKpDecimal;
+  case 0xffaf: return WinxKeyCodeKpDivide;
+  case 0xffaa: return WinxKeyCodeKpMultiply;
+  case 0xffad: return WinxKeyCodeKpSubtract;
+  case 0xffab: return WinxKeyCodeKpAdd;
+  case 0xff8d: return WinxKeyCodeKpEnter;
+  case 0xffbd: return WinxKeyCodeKpEqual;
+  case 0xffe1: return WinxKeyCodeLeftShift;
+  case 0xffe3: return WinxKeyCodeLeftControl;
+  case 0xffe9: return WinxKeyCodeLeftAlt;
+  case 0xffeb: return WinxKeyCodeLeftSuper;
+  case 0xffe2: return WinxKeyCodeRightShift;
+  case 0xffe4: return WinxKeyCodeRightControl;
+  case 0xffea: return WinxKeyCodeRightAlt;
+  case 0xffec: return WinxKeyCodeRightSuper;
+  case 0xff67: return WinxKeyCodeMenu;
+  default:     return 0;
   }
 }

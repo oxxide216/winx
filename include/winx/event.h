@@ -2,7 +2,7 @@
 #define EVENT_H
 
 #include "winx.h"
-#include "../../src/key_code.h"
+#include "key_code.h"
 #include "../../src/wstr.h"
 
 typedef enum {
@@ -10,6 +10,7 @@ typedef enum {
   WinxEventKindKeyPress,
   WinxEventKindKeyRelease,
   WinxEventKindKeyHold,
+  WinxEventKindChar,
   WinxEventKindButtonPress,
   WinxEventKindButtonRelease,
   WinxEventKindMouseMove,
@@ -23,8 +24,11 @@ typedef u32 WChar;
 
 typedef struct {
   WinxKeyCode key_code;
-  WChar       _char;
 } WinxEventKey;
+
+typedef struct {
+  WChar _char;
+} WinxEventChar;
 
 typedef enum {
   WinxMouseButtonLeft = 0,
@@ -51,6 +55,7 @@ typedef struct {
 
 typedef union {
   WinxEventKey       key;
+  WinxEventChar      _char;
   WinxEventButton    button;
   WinxEventMouseMove mouse_move;
   WinxEventResize    resize;

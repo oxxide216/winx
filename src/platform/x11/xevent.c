@@ -13,6 +13,15 @@
 WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
   WinxEvent winx_event = { WinxEventKindNone, {}, false };
 
+  if (window->last_char) {
+    winx_event.kind = WinxEventKindChar;
+    winx_event.as._char._char = window->last_char;
+
+    window->last_char = 0;
+
+    return winx_event;
+  }
+
   if (!wait && XPending(window->winx->display) == 0)
     return winx_event;
 
@@ -25,7 +34,6 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
     XSetICFocus(window->ic);
 
     KeySym keysym;
-    WChar wchar = '\0';
 
     if (x_event.type == KeyPress) {
       char key_name[4] = {0};
@@ -36,20 +44,20 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
                         ARRAY_LEN(key_name), &keysym, &status);
 
       if (status == XLookupChars || status == XLookupBoth)
-        wchar = *(WChar *) key_name;
+        window->last_char = *(WChar *) key_name;
 
-      switch (wchar) {
+      switch (window->last_char) {
       case 32525:   // Enter
       case 32521:   // Tab
       case 32520:   // Backspace
       case 32639:   // Delete
       case 32539: { // Escape
-        wchar = '\0';
+        window->last_char = 0;
       } break;
 
       default: {
-        if (!iswprint(wchar))
-          wchar = '\0';
+        if (!iswprint(window->last_char))
+          window->last_char = 0;
       } break;
       }
     } else {
@@ -70,7 +78,7 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
       winx_event.kind = WinxEventKindKeyRelease;
     }
 
-    winx_event.as.key = (WinxEventKey) { key_code, wchar };
+    winx_event.as.key = (WinxEventKey) { key_code };
   } break;
 
   case ButtonPress:

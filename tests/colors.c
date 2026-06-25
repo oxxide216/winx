@@ -8,7 +8,7 @@ static u32 colors[] = { 0xFFFF0000, 0xFF00FF00, 0xFF0000FF };
 void fill_window_framebuffer(WinxWindow *window, u32 color_index) {
   u32 *framebuffer = winx_get_framebuffer(window);
   for (u32 i = 0; i < window->width * window->height; ++i)
-      framebuffer[i] = colors[color_index];
+    framebuffer[i] = colors[color_index];
 }
 
 void color_index_move_forward(u32 *color_index) {
@@ -26,10 +26,8 @@ void color_index_move_backward(u32 *color_index) {
 bool process_event(WinxEvent *event, u32 *color_index) {
   if (event->kind == WinxEventKindQuit) {
     return false;
-  } else if (event->kind == WinxEventKindKeyPress) {
-    if (event->as.key._char != '\0')
-      INFO("%.*s\n", 4, (char *) &event->as.key._char);
-
+  } else if (event->kind == WinxEventKindKeyPress ||
+             event->kind == WinxEventKindKeyHold) {
     if (event->as.key.key_code == WinxKeyCodeRight)
       color_index_move_forward(color_index);
     else if (event->as.key.key_code == WinxKeyCodeLeft)
@@ -47,28 +45,28 @@ bool process_event(WinxEvent *event, u32 *color_index) {
   return true;
 }
 
-int main(void) {
-  Winx winx = winx_init();
-  WinxWindow window = winx_init_window(&winx, STR_LIT("Hello, world!"),
-                                       640, 480, WinxGraphicsModeFramebuffer,
-                                       NULL);
+i32 main(void) {
+  Winx *winx = winx_init();
+  WinxWindow *window = winx_init_window(winx, STR_LIT("Hello, world!"),
+                                        640, 480, WinxGraphicsModeFramebuffer,
+                                        NULL);
 
   u32 color_index = 0;
   bool is_running = true;
 
   while (is_running) {
     WinxEvent event;
-    while ((event = winx_get_event(&window, false)).kind != WinxEventKindNone) {
+    while ((event = winx_get_event(window, false)).kind != WinxEventKindNone) {
       is_running = process_event(&event, &color_index);
       if (!is_running)
         break;
     }
 
-    fill_window_framebuffer(&window, color_index);
-    winx_draw(&window);
+    fill_window_framebuffer(window, color_index);
+    winx_draw(window);
   }
 
-  winx_destroy_window(&window);
-  winx_cleanup(&winx);
+  winx_destroy_window(window);
+  winx_cleanup(winx);
   return 0;
 }

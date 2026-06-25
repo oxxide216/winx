@@ -4,8 +4,9 @@
 #include <X11/Xlib.h>
 #include <GL/glx.h>
 
+#include "winx/key_code.h"
 #include "../winx.h"
-#include "../../key_code.h"
+#include "../../wstr.h"
 #include "../../shl_defs.h"
 
 struct WinxNative {
@@ -30,6 +31,7 @@ struct WinxNativeWindow {
   XIC               ic;
   XEvent            prev_x_event;
   u64               is_key_pressed[WinxKeyCodeCount];
+  u32               last_char;
 };
 
 #endif // X11_WINX_H

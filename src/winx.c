@@ -3,29 +3,39 @@
 #include "winx/winx.h"
 #include "platform/winx.h"
 
-Winx winx_init(void) {
-  Winx winx = {0};
-  winx.native = winx_native_init();
+Winx *winx_init(void) {
+  WinxNative *native = winx_native_init();
+
+  if (!native)
+    return NULL;
+
+  Winx *winx = malloc(sizeof(Winx));
+  winx->native = native;
+
   return winx;
 }
 
-WinxWindow winx_init_window(Winx *winx, Str name,
-                            u32 width, u32 height,
-                            WinxGraphicsMode graphics_mode,
-                            WinxWindow *parent) {
-  WinxWindow window = {0};
-  window.name = name;
-  window.width = width;
-  window.height = height;
-
+WinxWindow *winx_init_window(Winx *winx, Str name,
+                             u32 width, u32 height,
+                             WinxGraphicsMode graphics_mode,
+                             WinxWindow *parent) {
   WinxNativeWindow *native_parent = NULL;
   if (parent)
     native_parent = parent->native;
 
-  window.native = winx_native_init_window(winx->native, name,
-                                          width, height,
-                                          graphics_mode,
-                                          native_parent);
+  WinxNativeWindow *native = winx_native_init_window(winx->native, name,
+                                                     width, height,
+                                                     graphics_mode,
+                                                     native_parent);
+
+  if (!native)
+    return NULL;
+
+  WinxWindow *window = malloc(sizeof(WinxWindow));
+  window->name = name;
+  window->width = width;
+  window->height = height;
+  window->native = native;
 
   return window;
 }

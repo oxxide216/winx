@@ -19,8 +19,8 @@ typedef struct {
   WinxNativeWindow *native;
 } WinxWindow;
 
-Winx        winx_init(void);
-WinxWindow  winx_init_window(Winx *winx, Str name,
+Winx       *winx_init(void);
+WinxWindow *winx_init_window(Winx *winx, Str name,
                              u32 width, u32 height,
                              WinxGraphicsMode graphics_mode,
                              WinxWindow *parent);

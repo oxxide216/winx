@@ -14,17 +14,17 @@ bool process_event(WinxEvent *event) {
   return true;
 }
 
-int main(void) {
-  Winx winx = winx_init();
-  WinxWindow window = winx_init_window(&winx, STR_LIT("Hello, world!"),
-                                       640, 480, WinxGraphicsModeOpenGL,
-                                       NULL);
+i32 main(void) {
+  Winx *winx = winx_init();
+  WinxWindow *window = winx_init_window(winx, STR_LIT("Hello, world!"),
+                                        640, 480, WinxGraphicsModeOpenGL,
+                                        NULL);
 
   bool is_running = true;
 
   while (is_running) {
     WinxEvent event;
-    while ((event = winx_get_event(&window, false)).kind != WinxEventKindNone) {
+    while ((event = winx_get_event(window, false)).kind != WinxEventKindNone) {
       is_running = process_event(&event);
       if (!is_running)
         break;
@@ -40,10 +40,10 @@ int main(void) {
       glColor3f(1.0, 1.0, 0.0); glVertex3f(-0.5,  0.5, 0.0);
     glEnd();
 
-    winx_draw(&window);
+    winx_draw(window);
   }
 
-  winx_destroy_window(&window);
-  winx_cleanup(&winx);
+  winx_destroy_window(window);
+  winx_cleanup(winx);
   return 0;
 }
