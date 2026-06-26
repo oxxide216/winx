@@ -35,6 +35,7 @@ WinxNative *winx_native_init(void) {
   WNDCLASSW window_class = {0};
   window_class.lpfnWndProc = window_proc;
   window_class.hInstance = winx->instance;
+	window_class.hCursor = LoadCursor(NULL, IDC_ARROW);
   window_class.lpszClassName = WINDOW_CLASS_NAME;
   RegisterClassW(&window_class);
 
