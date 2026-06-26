@@ -131,8 +131,6 @@ LRESULT CALLBACK window_proc(HWND window, UINT message, WPARAM w_param, LPARAM l
   } break;
 
   case WM_DESTROY: {
-    PostQuitMessage(0);
-
     winx_event.kind = WinxEventKindQuit;
   } break;
 
