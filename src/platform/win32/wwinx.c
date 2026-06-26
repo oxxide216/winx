@@ -15,7 +15,6 @@ typedef struct WinxNativeWindow WinxNativeWindow;
 typedef HGLRC (WINAPI *WglCreateContextAttribsARBProc)(HDC device_ctx,
                                                        HGLRC gl_context,
                                                        const i32 *attribs);
-
 typedef HRESULT (APIENTRY *WglChoosePixelFormatARBProc)(HDC device_ctx,
                                                         const i32 *i_attribs,
                                                         const FLOAT *f_attribs,
@@ -23,11 +22,8 @@ typedef HRESULT (APIENTRY *WglChoosePixelFormatARBProc)(HDC device_ctx,
                                                         i32 *formats,
                                                         UINT *num_formats);
 
-typedef BOOL(APIENTRY *WglSwapIntervalEXTProc)(i32 interval);
-
 static WglCreateContextAttribsARBProc wglCreateContextAttribsARB = NULL;
 static WglChoosePixelFormatARBProc wglChoosePixelFormatARB = NULL;
-static WglSwapIntervalEXTProc wglSwapIntervalEXT = NULL;
 
 LRESULT CALLBACK window_proc(HWND window, UINT message, WPARAM w_param, LPARAM l_param);
 
@@ -140,8 +136,8 @@ void winx_native_init_gl_context(WinxNativeWindow *window) {
   i32 pixel_format = ChoosePixelFormat(window->device_ctx, &desc);
   SetPixelFormat(window->device_ctx, pixel_format, &desc);
 
-  HGLRC temp_gl_context = wglCreateContext(window->device_ctx);
-  wglMakeCurrent(window->device_ctx, temp_gl_context);
+  HGLRC dummy_gl_context = wglCreateContext(window->device_ctx);
+  wglMakeCurrent(window->device_ctx, dummy_gl_context);
 
   wglCreateContextAttribsARB =
     (WglCreateContextAttribsARBProc) (void *)
@@ -149,12 +145,9 @@ void winx_native_init_gl_context(WinxNativeWindow *window) {
   wglChoosePixelFormatARB =
     (WglChoosePixelFormatARBProc) (void *)
       wglGetProcAddress("wglChoosePixelFormatARB");
-  wglSwapIntervalEXT =
-    (WglSwapIntervalEXTProc) (void *)
-      wglGetProcAddress("wglSwapIntervalEXT");
 
   wglMakeCurrent(window->device_ctx, 0);
-  wglDeleteContext(temp_gl_context);
+  wglDeleteContext(dummy_gl_context);
 
   static i32 attribs[] = {
     0x2003, // WGL_ACCELERATION_ARB
@@ -218,5 +211,9 @@ void winx_native_cleanup(WinxNative *winx) {
 }
 
 WinxApiProc winx_native_load_proc_address(const char *name) {
-  return (WinxApiProc) wglGetProcAddress(name);
+  WinxApiProc proc =  (WinxApiProc) wglGetProcAddress(name);
+  if (proc)
+    return proc;
+
+  return (WinxApiProc) GetProcAddress(GetModuleHandleA("opengl32.dll"), name);
 }
