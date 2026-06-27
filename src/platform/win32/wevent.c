@@ -4,7 +4,7 @@
 #include "wkey_code.h"
 #include "winx/winx.h"
 #include "winx/event.h"
-#include "../../shl_defs.h"
+#include "shl/shl-defs.h"
 #include "../../wstr.h"
 
 static Da(WinxEvent) winx_events = {0};

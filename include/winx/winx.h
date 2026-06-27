@@ -2,8 +2,8 @@
 #define WINX_H
 
 #include "../../src/graphics-mode.h"
-#include "../../src/shl_defs.h"
-#include "../../src/shl_str.h"
+#include "shl/shl-defs.h"
+#include "shl/shl-str.h"
 
 typedef struct WinxNative WinxNative;
 typedef struct WinxNativeWindow WinxNativeWindow;
@@ -16,6 +16,9 @@ typedef struct {
   Str               name;
   u32               width;
   u32               height;
+  f32               time;
+  f32               delta_time;
+  f32               fps;
   WinxNativeWindow *native;
 } WinxWindow;
 

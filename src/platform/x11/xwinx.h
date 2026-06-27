@@ -3,11 +3,12 @@
 
 #include <X11/Xlib.h>
 #include <GL/glx.h>
+#include <time.h>
 
 #include "winx/key_code.h"
 #include "../winx.h"
 #include "../../wstr.h"
-#include "../../shl_defs.h"
+#include "shl/shl-defs.h"
 
 struct WinxNative {
   Display     *display;
@@ -32,6 +33,7 @@ struct WinxNativeWindow {
   XEvent            prev_x_event;
   u64               is_key_pressed[WinxKeyCodeCount];
   u32               last_char;
+  suseconds_t       start_usecs;
 };
 
 #endif // X11_WINX_H

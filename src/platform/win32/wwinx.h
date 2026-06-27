@@ -5,7 +5,7 @@
 
 #include "winx/key_code.h"
 #include "../winx.h"
-#include "../../shl_defs.h"
+#include "shl/shl-defs.h"
 
 struct WinxNative {
   HMODULE  instance;
@@ -21,6 +21,8 @@ struct WinxNativeWindow {
   HDC               bitmap_device_ctx;
   HGLRC             gl_context;
   u64               is_key_pressed[WinxKeyCodeCount];
+  // u64               start_nanos;
+  u64               start_millis;
 };
 
 #endif // WIN32_WINX_H

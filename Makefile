@@ -7,11 +7,11 @@ ifeq ($(PLATFORM), LINUX)
 else ifeq ($(PLATFORM), WINDOWS)
   CC = x86_64-w64-mingw32-gcc
 endif
-override CFLAGS += -Wall -Wextra -Iinclude
+override CFLAGS += -Wall -Wextra -Iinclude -Ilibs
 ifeq ($(PLATFORM), LINUX)
   override LDFLAGS += -lX11 -lGL
 else ifeq ($(PLATFORM), WINDOWS)
-  override LDFLAGS += -lopengl32 -lgdi32
+  override LDFLAGS += -lopengl32 -lgdi32 -lwinmm
 endif
 BUILD_DIR = build
 

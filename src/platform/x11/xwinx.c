@@ -4,12 +4,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
+#include <unistd.h>
+#include <sys/time.h>
 
 #include "winx/winx.h"
 #include "xwinx.h"
-#include "../../shl_defs.h"
-#include "../../shl_str.h"
-#include "../../shl_log.h"
+#include "shl/shl-defs.h"
+#include "shl/shl-str.h"
+#include "shl/shl-log.h"
 
 #define EVENT_MASK (KeyPressMask |       \
                     KeyReleaseMask |     \
@@ -166,6 +168,10 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
                          XNClientWindow, window->window, XNFocusWindow, window->window, NULL);
   XSetICFocus(window->ic);
 
+  struct timeval current_time;
+  gettimeofday(&current_time, NULL);
+  window->start_usecs = current_time.tv_sec * 1000000 + current_time.tv_usec;
+
   return window;
 }
 
@@ -204,6 +210,13 @@ void winx_native_make_context_current(WinxNativeWindow *window) {
   glXMakeCurrent(window->winx->display, window->window, window->gl_context);
 }
 
+f32 winx_native_get_time(WinxNativeWindow *window) {
+  struct timeval current_time;
+  gettimeofday(&current_time, NULL);
+  u64 current_usecs = current_time.tv_sec * 1000000 + current_time.tv_usec;
+  return (f32) (current_usecs - window->start_usecs) / 1000000;
+}
+
 void winx_native_draw(WinxNativeWindow *window, u32 width, u32 height) {
   if (window->graphics_mode == WinxGraphicsModeFramebuffer)
     XPutImage(window->winx->display, window->window, window->graphic_context,
@@ -229,6 +242,10 @@ void winx_native_destroy_window(WinxNativeWindow *window) {
 void winx_native_cleanup(WinxNative *winx) {
   XFree(winx->fbc);
   XCloseDisplay(winx->display);
+}
+
+void winx_native_sleep(u32 ms) {
+  usleep(ms * 1000);
 }
 
 WinxApiProc winx_native_load_proc_address(const char *name) {

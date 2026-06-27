@@ -35,6 +35,9 @@ WinxWindow *winx_init_window(Winx *winx, Str name,
   window->name = name;
   window->width = width;
   window->height = height;
+  window->time = 0.0;
+  window->delta_time = 0.0;
+  window->fps = 0.0;
   window->native = native;
 
   return window;
@@ -50,6 +53,11 @@ void winx_make_context_current(WinxWindow *window) {
 
 void winx_draw(WinxWindow *window) {
   winx_native_draw(window->native, window->width, window->height);
+
+  f32 time = winx_native_get_time(window->native);
+  window->delta_time = time - window->time;
+  window->fps = 1.0 / window->delta_time;
+  window->time = time;
 }
 
 void winx_destroy_window(WinxWindow *window) {

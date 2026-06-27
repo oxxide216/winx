@@ -3,9 +3,9 @@
 #include "winx/winx.h"
 #include "wwinx.h"
 #include "../../wstr.h"
-#include "../../shl_defs.h"
-#include "../../shl_str.h"
-#include "../../shl_log.h"
+#include "shl/shl-defs.h"
+#include "shl/shl-str.h"
+#include "shl/shl-log.h"
 
 #define WINDOW_CLASS_NAME L"Winx Window Class"
 
@@ -35,7 +35,7 @@ WinxNative *winx_native_init(void) {
   WNDCLASSW window_class = {0};
   window_class.lpfnWndProc = window_proc;
   window_class.hInstance = winx->instance;
-	window_class.hCursor = LoadCursor(NULL, IDC_ARROW);
+  window_class.hCursor = LoadCursor(NULL, IDC_ARROW);
   window_class.lpszClassName = WINDOW_CLASS_NAME;
   RegisterClassW(&window_class);
 
@@ -90,7 +90,9 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
   case WinxGraphicsModeOpenGL: {
     winx_native_init_gl_context(window);
   } break;
-  }
+}
+
+  window->start_millis = timeGetTime();
 
   return window;
 }
@@ -186,6 +188,10 @@ void winx_native_make_context_current(WinxNativeWindow *window) {
   wglMakeCurrent(window->device_ctx, window->gl_context);
 }
 
+f32 winx_native_get_time(WinxNativeWindow *window) {
+  return (f32) (timeGetTime() - window->start_millis) / 1000.0;
+}
+
 void winx_native_draw(WinxNativeWindow *window, u32 width, u32 height) {
   if (window->graphics_mode == WinxGraphicsModeFramebuffer)
     BitBlt(window->device_ctx, 0, 0, width, height,
@@ -209,6 +215,10 @@ void winx_native_destroy_window(WinxNativeWindow *window) {
 
 void winx_native_cleanup(WinxNative *winx) {
   UnregisterClassW(WINDOW_CLASS_NAME, winx->instance);
+}
+
+void winx_native_sleep(u32 ms) {
+  Sleep(ms);
 }
 
 WinxApiProc winx_native_load_proc_address(const char *name) {

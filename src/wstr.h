@@ -7,8 +7,8 @@
 
 #include <stdio.h>
 
-#include "shl_defs.h"
-#include "shl_str.h"
+#include "shl/shl-defs.h"
+#include "shl/shl-str.h"
 
 typedef struct {
   u32 *ptr;
