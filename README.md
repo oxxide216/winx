@@ -2,6 +2,8 @@
 
 A simple windowing library!
 
+Currently supports *nix (via X11 protocol) and Windows.
+
 ## Dependencies
 
  - libxcb (when using x11 backend)
