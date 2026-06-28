@@ -6,6 +6,8 @@
 #include <locale.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
 
 #include "winx/winx.h"
 #include "xwinx.h"
@@ -40,6 +42,7 @@ WinxNative *winx_native_init(void) {
   winx->screen = DefaultScreen(winx->display);
   winx->wm_delete_window = XInternAtom(winx->display, "WM_DELETE_WINDOW", false);
   winx->im = XOpenIM(winx->display, NULL, NULL, NULL);
+  winx->is_shm_supported = XShmQueryExtension(display);
 
   XkbSetDetectableAutoRepeat(winx->display, true, NULL);
 
@@ -133,12 +136,6 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
                                  CWColormap | CWBorderPixel | CWEventMask,
                                  &attributes);
 
-  window->ic = XCreateIC(winx->im,
-                         XNInputStyle, XIMPreeditNothing | XIMStatusNothing,
-                         XNClientWindow, window->window,
-                         XNFocusWindow, window->window,
-                         NULL);
-
   char *cstr_name = malloc(name.len + 1);
   memcpy(cstr_name, name.ptr, name.len);
   cstr_name[name.len] = '\0';
@@ -176,14 +173,37 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
 }
 
 void winx_native_init_framebuffer(WinxNativeWindow *window, u32 width, u32 height) {
-  if (window->framebuffer)
+  if (window->framebuffer) {
+    XSync(window->winx->display, false);
+    if (window->winx->is_shm_supported)
+      XShmDetach(window->winx->display, &window->shm_info);
     XDestroyImage(window->image);
+    if (window->winx->is_shm_supported) {
+      shmdt(window->shm_info.shmaddr);
+      shmctl(window->shm_info.shmid, IPC_RMID, 0);
+    }
+  }
 
-  window->framebuffer = malloc(width * height * sizeof(u32));
-  window->image = XCreateImage(window->winx->display, window->visual_info->visual,
-                               window->visual_info->depth, ZPixmap,
-                               0, (char *) window->framebuffer,
-                               width, height, 8, width * sizeof(u32));
+  u32 size = width * height * sizeof(u32);
+  if (window->winx->is_shm_supported) {
+    window->image = XShmCreateImage(window->winx->display, window->visual_info->visual,
+                                    window->visual_info->depth, ZPixmap, NULL,
+                                    &window->shm_info, width, height);
+    window->shm_info.shmid = shmget(IPC_PRIVATE,
+                                    size,
+                                    IPC_CREAT|0777);
+    window->shm_info.shmaddr = shmat(window->shm_info.shmid, 0, 0);
+    window->shm_info.readOnly = false;
+    window->image->data = window->shm_info.shmaddr;
+    window->framebuffer = (u32 *) window->shm_info.shmaddr;
+    XShmAttach(window->winx->display, &window->shm_info);
+  } else {
+    window->framebuffer = malloc(size);
+    window->image = XCreateImage(window->winx->display, window->visual_info->visual,
+                                 window->visual_info->depth, ZPixmap,
+                                 0, (char *) window->framebuffer,
+                                 width, height, 8, width * sizeof(u32));
+  }
 }
 
 u32 *winx_native_get_framebuffer(WinxNativeWindow *window) {
@@ -218,11 +238,16 @@ f32 winx_native_get_time(WinxNativeWindow *window) {
 }
 
 void winx_native_draw(WinxNativeWindow *window, u32 width, u32 height) {
-  if (window->graphics_mode == WinxGraphicsModeFramebuffer)
-    XPutImage(window->winx->display, window->window, window->graphic_context,
-              window->image, 0, 0, 0, 0, width, height);
-  else if (window->graphics_mode == WinxGraphicsModeOpenGL)
+  if (window->graphics_mode == WinxGraphicsModeFramebuffer) {
+    if (window->winx->is_shm_supported)
+      XShmPutImage(window->winx->display, window->window, window->graphic_context,
+                   window->image, 0, 0, 0, 0, width, height, false);
+    else
+      XPutImage(window->winx->display, window->window, window->graphic_context,
+                window->image, 0, 0, 0, 0, width, height);
+  } else if (window->graphics_mode == WinxGraphicsModeOpenGL) {
     glXSwapBuffers(window->winx->display, window->window);
+  }
 }
 
 void winx_native_destroy_window(WinxNativeWindow *window) {

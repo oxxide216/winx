@@ -2,6 +2,7 @@
 #define X11_WINX_H
 
 #include <X11/Xlib.h>
+#include <X11/extensions/XShm.h>
 #include <GL/glx.h>
 #include <time.h>
 
@@ -18,6 +19,7 @@ struct WinxNative {
   XIC          ic;
   GLXFBConfig *fbc;
   GLXFBConfig  best_fbc;
+  bool         is_shm_supported;
 };
 
 struct WinxNativeWindow {
@@ -28,6 +30,7 @@ struct WinxNativeWindow {
   GC                graphic_context;
   u32              *framebuffer;
   XImage           *image;
+  XShmSegmentInfo   shm_info;
   GLXContext        gl_context;
   XIC               ic;
   XEvent            prev_x_event;

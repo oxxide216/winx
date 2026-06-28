@@ -7,7 +7,7 @@
 #include "xkey_code.h"
 #include "winx/winx.h"
 #include "winx/event.h"
-#include "../../shl_defs.h"
+#include "shl/shl-defs.h"
 #include "../../wstr.h"
 
 WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
