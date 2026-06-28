@@ -9,7 +9,7 @@ else ifeq ($(PLATFORM), WINDOWS)
 endif
 override CFLAGS += -Wall -Wextra -Iinclude -Ilibs
 ifeq ($(PLATFORM), LINUX)
-  override LDFLAGS += -lm -lX11 -lXext -lGL
+  override LDFLAGS += -lm -lX11 -lXext -lXrandr -lGL
 else ifeq ($(PLATFORM), WINDOWS)
   override LDFLAGS += -lm -lopengl32 -lgdi32 -lwinmm -static
 endif

@@ -20,6 +20,7 @@ struct WinxNative {
   GLXFBConfig *fbc;
   GLXFBConfig  best_fbc;
   bool         is_shm_supported;
+  bool         is_randr_supported;
 };
 
 struct WinxNativeWindow {

@@ -19,6 +19,7 @@ typedef struct {
   f32               time;
   f32               delta_time;
   f32               fps;
+  f32               target_fps;
   WinxNativeWindow *native;
 } WinxWindow;
 
@@ -31,6 +32,7 @@ WinxWindow *winx_init_window(Winx *winx, Str name,
                              WinxWindow *parent);
 u32        *winx_get_framebuffer(WinxWindow *window);
 void        winx_make_context_current(WinxWindow *window);
+f32         winx_get_refresh_rate(WinxWindow *window);
 void        winx_draw(WinxWindow *window);
 void        winx_destroy_window(WinxWindow *window);
 void        winx_cleanup(Winx *winx);

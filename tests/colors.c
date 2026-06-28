@@ -50,6 +50,7 @@ i32 main(void) {
   WinxWindow *window = winx_init_window(winx, STR_LIT("Hello, world!"),
                                         640, 480, WinxGraphicsModeFramebuffer,
                                         NULL);
+  window->target_fps = winx_get_refresh_rate(window);
 
   u32 color_index = 0;
   bool is_running = true;

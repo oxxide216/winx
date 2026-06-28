@@ -188,6 +188,15 @@ void winx_native_make_context_current(WinxNativeWindow *window) {
   wglMakeCurrent(window->device_ctx, window->gl_context);
 }
 
+f32 winx_native_get_refresh_rate(WinxNativeWindow *window) {
+  (void) window;
+  DEVMODE device_mode = {0};
+  device_mode.dmSize = sizeof(device_mode);
+  if (EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &device_mode))
+    return (f32) device_mode.dmDisplayFrequency;
+  return 0.0;
+}
+
 f32 winx_native_get_time(WinxNativeWindow *window) {
   return (f32) (timeGetTime() - window->start_millis) / 1000.0;
 }

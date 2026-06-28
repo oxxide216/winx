@@ -1,6 +1,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/XKBlib.h>
+#include <X11/extensions/Xrandr.h>
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
@@ -43,6 +44,8 @@ WinxNative *winx_native_init(void) {
   winx->wm_delete_window = XInternAtom(winx->display, "WM_DELETE_WINDOW", false);
   winx->im = XOpenIM(winx->display, NULL, NULL, NULL);
   winx->is_shm_supported = XShmQueryExtension(display);
+  i32 event_base, error_base;
+  winx->is_randr_supported = XRRQueryExtension(display, &event_base, &error_base);
 
   XkbSetDetectableAutoRepeat(winx->display, true, NULL);
 
@@ -228,6 +231,17 @@ void winx_native_init_gl_context(WinxNativeWindow *window) {
 
 void winx_native_make_context_current(WinxNativeWindow *window) {
   glXMakeCurrent(window->winx->display, window->window, window->gl_context);
+}
+
+f32 winx_native_get_refresh_rate(WinxNativeWindow *window) {
+  if (window->winx->is_randr_supported) {
+    XRRScreenConfiguration *config =
+      XRRGetScreenInfo(window->winx->display, window->window);
+    short rate = XRRConfigCurrentRate(config);
+    XFree(config);
+    return (f32) rate;
+  }
+  return 0.0;
 }
 
 f32 winx_native_get_time(WinxNativeWindow *window) {

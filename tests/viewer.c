@@ -46,6 +46,7 @@ i32 main(i32 argc, char **argv) {
                                         image.width, image.height,
                                         WinxGraphicsModeFramebuffer,
                                         NULL);
+  window->target_fps = winx_get_refresh_rate(window);
 
   bool is_running = true;
 
