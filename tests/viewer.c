@@ -16,13 +16,19 @@ u32 min(u32 a, u32 b) {
 }
 
 void render(WinxWindow *window, ViewedImage *image) {
-  u32 *framebuffer = winx_get_framebuffer(window);
-  for (u32 y = 0; y < min(window->height, image->height); ++y) {
-    u32 sy = y * image->width;
-    u32 dy = y * window->width;
-    for (u32 x = 0; x < min(window->width, image->width); ++x)
+  static u32 prev_width = 0, prev_height = 0;
+  if (window->width != prev_width ||
+      window->height != prev_height) {
+    prev_width = window->width;
+    prev_height = window->height;
+    u32 *framebuffer = winx_get_framebuffer(window);
+    for (u32 y = 0; y < min(window->height, image->height); ++y) {
+      u32 sy = y * image->width;
+      u32 dy = y * window->width;
+      for (u32 x = 0; x < min(window->width, image->width); ++x)
       framebuffer[dy + x] = image->data[sy + x];
-  }
+    }
+    }
 }
 
 i32 main(i32 argc, char **argv) {
