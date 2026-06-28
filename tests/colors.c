@@ -1,7 +1,7 @@
 #include "winx/winx.h"
 #include "winx/event.h"
-#include "shl_log.h"
-#include "shl_defs.h"
+#include "shl/shl-log.h"
+#include "shl/shl-defs.h"
 
 static u32 colors[] = { 0xFFFF0000, 0xFF00FF00, 0xFF0000FF };
 

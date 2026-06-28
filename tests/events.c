@@ -3,8 +3,8 @@
 
 #include "winx/winx.h"
 #include "winx/event.h"
-#include "shl_log.h"
-#include "shl_defs.h"
+#include "shl/shl-log.h"
+#include "shl/shl-defs.h"
 
 static char *event_names[] = {
   "WinxEventKindNone",

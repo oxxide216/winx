@@ -9,9 +9,9 @@ else ifeq ($(PLATFORM), WINDOWS)
 endif
 override CFLAGS += -Wall -Wextra -Iinclude -Ilibs
 ifeq ($(PLATFORM), LINUX)
-  override LDFLAGS += -lX11 -lXext -lGL
+  override LDFLAGS += -lm -lX11 -lXext -lGL
 else ifeq ($(PLATFORM), WINDOWS)
-  override LDFLAGS += -lopengl32 -lgdi32 -lwinmm
+  override LDFLAGS += -lm -lopengl32 -lgdi32 -lwinmm
 endif
 BUILD_DIR = build
 
