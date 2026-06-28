@@ -11,7 +11,7 @@ override CFLAGS += -Wall -Wextra -Iinclude -Ilibs
 ifeq ($(PLATFORM), LINUX)
   override LDFLAGS += -lm -lX11 -lXext -lGL
 else ifeq ($(PLATFORM), WINDOWS)
-  override LDFLAGS += -lm -lopengl32 -lgdi32 -lwinmm
+  override LDFLAGS += -lm -lopengl32 -lgdi32 -lwinmm -static
 endif
 BUILD_DIR = build
 
