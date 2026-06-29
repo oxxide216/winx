@@ -75,11 +75,13 @@ void winx_draw(WinxWindow *window) {
 void winx_destroy_window(WinxWindow *window) {
   winx_native_destroy_window(window->native);
   free(window->native);
+  free(window);
 }
 
 void winx_cleanup(Winx *winx) {
   winx_native_cleanup(winx->native);
   free(winx->native);
+  free(winx);
 }
 
 WinxApiProc winx_load_proc_address(const char *name) {
