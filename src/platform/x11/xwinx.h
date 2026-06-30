@@ -16,7 +16,6 @@ struct WinxNative {
   i32          screen;
   Atom         wm_delete_window;
   XIM          im;
-  XIC          ic;
   GLXFBConfig *fbc;
   GLXFBConfig  best_fbc;
   bool         is_shm_supported;

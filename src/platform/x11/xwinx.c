@@ -280,6 +280,7 @@ void winx_native_destroy_window(WinxNativeWindow *window) {
 
 void winx_native_cleanup(WinxNative *winx) {
   XFree(winx->fbc);
+  XCloseIM(winx->im);
   XCloseDisplay(winx->display);
 }
 
