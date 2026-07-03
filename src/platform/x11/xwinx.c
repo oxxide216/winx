@@ -220,9 +220,10 @@ void winx_native_init_gl_context(WinxNativeWindow *window) {
     None,
   };
 
-  glXCreateContextAttribsARBProc glXCreateContextAttribsARB = 0;
-  glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc)
-           glXGetProcAddressARB((const GLubyte *) "glXCreateContextAttribsARB" );
+  glXCreateContextAttribsARBProc glXCreateContextAttribsARB;
+  glXCreateContextAttribsARB =
+    (glXCreateContextAttribsARBProc)
+      glXGetProcAddressARB((const GLubyte *) "glXCreateContextAttribsARB");
 
   window->gl_context = glXCreateContextAttribsARB(window->winx->display, window->winx->best_fbc,
                                                   0, True, context_attributes);
