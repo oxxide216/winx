@@ -1,6 +1,10 @@
 #ifndef WINX_H
 #define WINX_H
 
+#ifdef WINX_VULKAN
+#include <vulkan/vulkan.h>
+#endif
+
 #include "../../src/graphics-mode.h"
 #include "shl/shl-defs.h"
 #include "shl/shl-str.h"
@@ -38,5 +42,12 @@ void        winx_destroy_window(WinxWindow *window);
 void        winx_cleanup(Winx *winx);
 
 WinxApiProc winx_load_proc_address(const char *name);
+
+#ifdef WINX_VULKAN
+char **winx_get_vulkan_extensions(u32 *len);
+VkSurfaceKHR winx_create_vulkan_surface(WinxWindow *window,
+                                        VkInstance instance,
+                                        const VkAllocationCallbacks *allocator);
+#endif
 
 #endif // WINX_H

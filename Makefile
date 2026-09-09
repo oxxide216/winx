@@ -7,11 +7,11 @@ ifeq ($(PLATFORM), LINUX)
 else ifeq ($(PLATFORM), WINDOWS)
   CC = x86_64-w64-mingw32-gcc
 endif
-override CFLAGS += -Wall -Wextra -Iinclude -Ilibs
+override CFLAGS += -Wall -Wextra -Iinclude -Ilibs # -DWINX_VULKAN -I$(VULKAN_SDK)/Include
 ifeq ($(PLATFORM), LINUX)
   override LDFLAGS += -lm -lX11 -lXext -lXrandr -lGL
 else ifeq ($(PLATFORM), WINDOWS)
-  override LDFLAGS += -lm -lopengl32 -lgdi32 -lwinmm -static
+  override LDFLAGS += -lm -lopengl32 -lgdi32 -lwinmm -static # -L$(VULKAN_SDK)/Lib -lvulkan-1
 endif
 BUILD_DIR = build
 

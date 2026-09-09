@@ -16,6 +16,10 @@
 #include "shl/shl-str.h"
 #include "shl/shl-log.h"
 
+#ifdef WINX_VULKAN
+#include <vulkan/vulkan_xlib.h>
+#endif
+
 #define EVENT_MASK (KeyPressMask |       \
                     KeyReleaseMask |     \
                     ButtonPressMask |    \
@@ -290,3 +294,26 @@ void winx_native_sleep(u32 ms) {
 WinxApiProc winx_native_load_proc_address(const char *name) {
   return glXGetProcAddress((const u8 *) name);
 }
+
+#ifdef WINX_VULKAN
+char **winx_native_get_vulkan_extensions(u32 *len) {
+  static char *extensions[] = { "VK_KHR_swapchain", "VK_KHR_xlib_surface" };
+  *len = ARRAY_LEN(extensions);
+  return extensions;
+}
+
+VkSurfaceKHR winx_native_create_vulkan_surface(WinxNativeWindow *window,
+                                               VkInstance instance,
+                                               const VkAllocationCallbacks *allocator) {
+  VkXlibSurfaceCreateInfoKHR create_info = {0};
+  create_info.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
+  create_info.pNext = NULL;
+  create_info.flags = 0;
+  create_info.dpy = window->winx->display;
+  create_info.window = window->window;
+
+  VkSurfaceKHR surface;
+  vkCreateXlibSurfaceKHR(instance, &create_info, allocator, &surface);
+  return surface;
+}
+#endif

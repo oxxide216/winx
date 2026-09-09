@@ -7,6 +7,10 @@
 #include "shl/shl-str.h"
 #include "shl/shl-log.h"
 
+#ifdef WINX_VULKAN
+#include <vulkan/vulkan_win32.h>
+#endif
+
 #define WINDOW_CLASS_NAME L"Winx Window Class"
 
 typedef struct WinxNative WinxNative;
@@ -237,3 +241,26 @@ WinxApiProc winx_native_load_proc_address(const char *name) {
 
   return (WinxApiProc) GetProcAddress(GetModuleHandleA("opengl32.dll"), name);
 }
+
+#ifdef WINX_VULKAN
+char **winx_native_get_vulkan_extensions(u32 *len) {
+  static char *extensions[] = { "VK_KHR_swapchain", "VK_KHR_win32_surface" };
+  *len = ARRAY_LEN(extensions);
+  return extensions;
+}
+
+VkSurfaceKHR winx_native_create_vulkan_surface(WinxNativeWindow *window,
+                                               VkInstance instance,
+                                               const VkAllocationCallbacks *allocator) {
+  VkWin32SurfaceCreateInfoKHR create_info = {0};
+  create_info.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+  create_info.pNext = NULL;
+  create_info.flags = 0;
+  create_info.hinstance = window->winx->instance;
+  create_info.hwnd = window->window;
+
+  VkSurfaceKHR surface;
+  vkCreateWin32SurfaceKHR(instance, &create_info, allocator, &surface);
+  return surface;
+}
+#endif
