@@ -44,7 +44,7 @@ void        winx_cleanup(Winx *winx);
 WinxApiProc winx_load_proc_address(const char *name);
 
 #ifdef WINX_VULKAN
-char **winx_get_vulkan_extensions(u32 *len);
+const char * const *winx_get_vulkan_extensions(u32 *len);
 VkSurfaceKHR winx_create_vulkan_surface(WinxWindow *window,
                                         VkInstance instance,
                                         const VkAllocationCallbacks *allocator);

@@ -27,7 +27,7 @@ void winx_native_sleep(u32 ms);
 WinxApiProc winx_native_load_proc_address(const char *name);
 
 #ifdef WINX_VULKAN
-char **winx_native_get_vulkan_extensions(u32 *len);
+const char * const *winx_native_get_vulkan_extensions(u32 *len);
 VkSurfaceKHR winx_native_create_vulkan_surface(WinxNativeWindow *window,
                                                VkInstance instance,
                                                const VkAllocationCallbacks *allocator);

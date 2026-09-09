@@ -296,8 +296,8 @@ WinxApiProc winx_native_load_proc_address(const char *name) {
 }
 
 #ifdef WINX_VULKAN
-char **winx_native_get_vulkan_extensions(u32 *len) {
-  static char *extensions[] = { "VK_KHR_swapchain", "VK_KHR_xlib_surface" };
+const char * const *winx_native_get_vulkan_extensions(u32 *len) {
+  static const char *extensions[] = { "VK_KHR_swapchain", "VK_KHR_xlib_surface" };
   *len = ARRAY_LEN(extensions);
   return extensions;
 }
