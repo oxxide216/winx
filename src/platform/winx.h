@@ -1,5 +1,4 @@
 #include "winx/winx.h"
-#include "../graphics-mode.h"
 #include "shl/shl-defs.h"
 #include "shl/shl-str.h"
 

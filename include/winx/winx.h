@@ -5,7 +5,7 @@
 #include <vulkan/vulkan.h>
 #endif
 
-#include "../../src/graphics-mode.h"
+#include "graphics-mode.h"
 #include "shl/shl-defs.h"
 #include "shl/shl-str.h"
 

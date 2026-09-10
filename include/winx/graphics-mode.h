@@ -9,6 +9,7 @@
 typedef enum {
   WinxGraphicsModeFramebuffer = 0,
   WinxGraphicsModeOpenGL,
+  WinxGraphicsModeVulkan,
 } WinxGraphicsMode;
 
 #endif // GRAPHICS_MODE_H

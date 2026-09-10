@@ -59,7 +59,7 @@ WinxNative *winx_native_init(void) {
 }
 
 static XVisualInfo *winx_get_visual_info(WinxNative *winx, WinxGraphicsMode graphics_mode) {
-  if (graphics_mode == WinxGraphicsModeFramebuffer) {
+  if (graphics_mode == WinxGraphicsModeFramebuffer || graphics_mode == WinxGraphicsModeVulkan) {
     i32 num_screens = 0;
     return XGetVisualInfo(winx->display, 0, NULL, &num_screens);
   } else if (graphics_mode == WinxGraphicsModeOpenGL) {
@@ -164,6 +164,8 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
   case WinxGraphicsModeOpenGL: {
     winx_native_init_gl_context(window);
   } break;
+
+  case WinxGraphicsModeVulkan: break;
   }
 
   window->ic = XCreateIC(winx->im, XNInputStyle, XIMPreeditNothing | XIMStatusNothing,

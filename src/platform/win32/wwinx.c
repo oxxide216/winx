@@ -94,7 +94,9 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
   case WinxGraphicsModeOpenGL: {
     winx_native_init_gl_context(window);
   } break;
-}
+
+  case WinxGraphicsModeVulkan: break;
+  }
 
   window->start_millis = timeGetTime();
 
