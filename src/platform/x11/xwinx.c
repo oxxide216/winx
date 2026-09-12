@@ -249,6 +249,16 @@ f32 winx_native_get_refresh_rate(WinxNativeWindow *window) {
   return 0.0;
 }
 
+void winx_native_set_capture_cursor(WinxNativeWindow *window, bool value) {
+  if (value)
+    XGrabPointer(window->winx->display, window->window, false,
+                 ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
+                 EnterWindowMask | LeaveWindowMask,
+                 GrabModeSync, GrabModeSync, None, None, CurrentTime);
+  else
+    XUngrabPointer(window->winx->display, CurrentTime);
+}
+
 f32 winx_native_get_time(WinxNativeWindow *window) {
   struct timeval current_time;
   gettimeofday(&current_time, NULL);

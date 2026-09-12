@@ -16,6 +16,7 @@ u32              *winx_native_get_framebuffer(WinxNativeWindow *window);
 void              winx_native_init_gl_context(WinxNativeWindow *window);
 void              winx_native_make_context_current(WinxNativeWindow *window);
 f32               winx_native_get_refresh_rate(WinxNativeWindow *window);
+void              winx_native_set_capture_cursor(WinxNativeWindow *window, bool value);
 f32               winx_native_get_time(WinxNativeWindow *window);
 void              winx_native_draw(WinxNativeWindow *window, u32 width, u32 height);
 void              winx_native_destroy_window(WinxNativeWindow *window);

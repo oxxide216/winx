@@ -55,6 +55,10 @@ f32 winx_get_refresh_rate(WinxWindow *window) {
   return winx_native_get_refresh_rate(window->native);
 }
 
+void winx_set_capture_cursor(WinxWindow *window, bool value) {
+  winx_native_set_capture_cursor(window->native, value);
+}
+
 void winx_draw(WinxWindow *window) {
   winx_native_draw(window->native, window->width, window->height);
 

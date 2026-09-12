@@ -203,6 +203,13 @@ f32 winx_native_get_refresh_rate(WinxNativeWindow *window) {
   return 0.0;
 }
 
+void winx_native_set_capture_cursor(WinxNativeWindow *window, bool value) {
+  if (value)
+    SetCapture(window->window);
+  else
+    ReleaseCapture();
+}
+
 f32 winx_native_get_time(WinxNativeWindow *window) {
   return (f32) (timeGetTime() - window->start_millis) / 1000.0;
 }
