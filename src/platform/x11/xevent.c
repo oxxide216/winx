@@ -106,7 +106,7 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
       x_event.xmotion.y,
     };
 
-    if (window->cursor_captured)
+    if (window->is_cursor_captured)
       XWarpPointer(window->winx->display, None, window->window,
                    0, 0, 0, 0, window->width / 2, window->height / 2);
   } break;
