@@ -9,7 +9,7 @@ else ifeq ($(PLATFORM), WINDOWS)
 endif
 override CFLAGS += -Wall -Wextra -Iinclude -Ilibs # -DWINX_VULKAN -I$(VULKAN_SDK)/Include
 ifeq ($(PLATFORM), LINUX)
-  override LDFLAGS += -lm -lX11 -lXext -lXrandr -Xfixes -lGL
+  override LDFLAGS += -lm -lX11 -lXext -lXrandr -lXfixes -lGL
 else ifeq ($(PLATFORM), WINDOWS)
   override LDFLAGS += -lm -lopengl32 -lgdi32 -lwinmm -static # -L$(VULKAN_SDK)/Lib -lvulkan-1
 endif
