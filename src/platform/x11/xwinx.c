@@ -2,6 +2,7 @@
 #include <X11/Xutil.h>
 #include <X11/XKBlib.h>
 #include <X11/extensions/Xrandr.h>
+#include <X11/extensions/Xfixes.h>
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
@@ -251,12 +252,14 @@ f32 winx_native_get_refresh_rate(WinxNativeWindow *window) {
 
 void winx_native_set_capture_cursor(WinxNativeWindow *window, bool value) {
   if (value)
-    XGrabPointer(window->winx->display, window->window, false,
-                 ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
-                 EnterWindowMask | LeaveWindowMask,
-                 GrabModeSync, GrabModeSync, None, None, CurrentTime);
+    XFixesHideCursor(window->winx->display, window->window);
+    /* XGrabPointer(window->winx->display, window->window, false, */
+                 /* ButtonPressMask | ButtonReleaseMask | PointerMotionMask | */
+                 /* EnterWindowMask | LeaveWindowMask, */
+                 /* GrabModeSync, GrabModeSync, None, None, CurrentTime); */
   else
-    XUngrabPointer(window->winx->display, CurrentTime);
+    XFixesShowCursor(window->winx->display, window->window);
+    /* XUngrabPointer(window->winx->display, CurrentTime); */
 }
 
 f32 winx_native_get_time(WinxNativeWindow *window) {
