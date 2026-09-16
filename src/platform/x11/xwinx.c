@@ -253,13 +253,8 @@ f32 winx_native_get_refresh_rate(WinxNativeWindow *window) {
 void winx_native_set_capture_cursor(WinxNativeWindow *window, bool value) {
   if (value)
     XFixesHideCursor(window->winx->display, window->window);
-    /* XGrabPointer(window->winx->display, window->window, false, */
-                 /* ButtonPressMask | ButtonReleaseMask | PointerMotionMask | */
-                 /* EnterWindowMask | LeaveWindowMask, */
-                 /* GrabModeSync, GrabModeSync, None, None, CurrentTime); */
   else
     XFixesShowCursor(window->winx->display, window->window);
-    /* XUngrabPointer(window->winx->display, CurrentTime); */
 }
 
 f32 winx_native_get_time(WinxNativeWindow *window) {
