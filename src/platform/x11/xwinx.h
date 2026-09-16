@@ -25,6 +25,8 @@ struct WinxNative {
 struct WinxNativeWindow {
   WinxNative       *winx;
   Window            window;
+  u32               width;
+  u32               height;
   WinxGraphicsMode  graphics_mode;
   XVisualInfo      *visual_info;
   GC                graphic_context;
@@ -37,6 +39,7 @@ struct WinxNativeWindow {
   u64               is_key_pressed[WinxKeyCodeCount];
   u32               last_char;
   suseconds_t       start_usecs;
+  bool              is_cursor_captured;
 };
 
 #endif // X11_WINX_H

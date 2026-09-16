@@ -81,6 +81,8 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
     return NULL;
   }
 
+  SetWindowLongPtrA(window->window, GWLP_USERDATA, (LONG_PTR) window);
+
   ShowWindow(window->window, SW_SHOWNORMAL);
   UpdateWindow(window->window);
 
@@ -204,6 +206,7 @@ f32 winx_native_get_refresh_rate(WinxNativeWindow *window) {
 }
 
 void winx_native_set_capture_cursor(WinxNativeWindow *window, bool value) {
+  window->is_cursor_captured = value;
   if (value)
     SetCapture(window->window);
   else

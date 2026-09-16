@@ -7,8 +7,6 @@
 #include "shl/shl-defs.h"
 #include "../../wstr.h"
 
-static Da(WinxEvent) winx_events = {0};
-
 WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
   WinxEvent winx_event = { WinxEventKindNone, {}, false };
 
@@ -22,8 +20,8 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
   TranslateMessage(&msg);
   DispatchMessageW(&msg);
 
-  if (winx_events.len > 0) {
-    winx_event = winx_events.items[--winx_events.len];
+  if (window->events.len > 0) {
+    winx_event = window->events.items[--window->events.len];
 
     if (winx_event.kind == WinxEventKindKeyPress) {
       if (window->is_key_pressed[winx_event.as.key.key_code]) {
@@ -41,6 +39,7 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
 }
 
 LRESULT CALLBACK window_proc(HWND window, UINT message, WPARAM w_param, LPARAM l_param) {
+  WinxNativeWindow *winx_window = (WinxNativeWindow *) GetWindowLongPtrA(window, GWLP_USERDATA);
   WinxEvent winx_event = { WinxEventKindNone, {}, false };
 
   switch (message) {
@@ -114,6 +113,13 @@ LRESULT CALLBACK window_proc(HWND window, UINT message, WPARAM w_param, LPARAM l
     winx_event.kind = WinxEventKindMouseMove;
     winx_event.as.mouse_move.x = GET_X_LPARAM(l_param);
     winx_event.as.mouse_move.y = GET_Y_LPARAM(l_param);
+
+    if (winx_window->is_cursor_captured) {
+      RECT window_rect;
+      GetWindowRect(window, &window_rect);
+      SetCursorPos(window_rect.left + winx_window->width / 2,
+                   window_rect.top + winx_window->height / 2);
+    }
   } break;
 
   case WM_SETFOCUS: {
@@ -128,6 +134,9 @@ LRESULT CALLBACK window_proc(HWND window, UINT message, WPARAM w_param, LPARAM l
     winx_event.kind = WinxEventKindResize;
     winx_event.as.resize.width = LOWORD(l_param);
     winx_event.as.resize.height = HIWORD(l_param);
+
+    winx_window->width = winx_event.as.resize.width;
+    winx_window->height = winx_event.as.resize.height;
   } break;
 
   case WM_DESTROY: {
@@ -140,7 +149,7 @@ LRESULT CALLBACK window_proc(HWND window, UINT message, WPARAM w_param, LPARAM l
   }
 
   if (winx_event.kind != WinxEventKindNone)
-    DA_APPEND(winx_events, winx_event);
+    DA_APPEND(winx_window->events, winx_event);
 
   return 0;
 }

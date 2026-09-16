@@ -251,6 +251,7 @@ f32 winx_native_get_refresh_rate(WinxNativeWindow *window) {
 }
 
 void winx_native_set_capture_cursor(WinxNativeWindow *window, bool value) {
+  window->cursor_captured = value;
   if (value)
     XFixesHideCursor(window->winx->display, window->window);
   else

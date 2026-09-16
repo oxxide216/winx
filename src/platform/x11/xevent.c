@@ -105,6 +105,10 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
       x_event.xmotion.x,
       x_event.xmotion.y,
     };
+
+    if (window->cursor_captured)
+      XWarpPointer(window->winx->display, None, window->window,
+                   0, 0, 0, 0, window->width / 2, window->height / 2);
   } break;
 
   case EnterNotify: {
@@ -121,6 +125,9 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
 
     winx_event.kind = WinxEventKindResize;
     winx_event.as.resize = (WinxEventResize) { new_width, new_height };
+
+    window->width = new_width;
+    window->height = new_height;
   } break;
 
   case ClientMessage: {
