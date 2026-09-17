@@ -40,6 +40,7 @@ struct WinxNativeWindow {
   u32               last_char;
   suseconds_t       start_usecs;
   bool              is_cursor_captured;
+  bool              is_cursor_warping;
 };
 
 #endif // X11_WINX_H

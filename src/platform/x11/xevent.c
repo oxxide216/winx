@@ -100,15 +100,24 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
   } break;
 
   case MotionNotify: {
+    if (window->is_cursor_warping &&
+        (u32) x_event.xmotion.x == window->width / 2 &&
+        (u32) x_event.xmotion.y == window->height / 2) {
+      window->is_cursor_warping = false;
+      break;
+    }
+
     winx_event.kind = WinxEventKindMouseMove;
     winx_event.as.mouse_move = (WinxEventMouseMove) {
       x_event.xmotion.x,
       x_event.xmotion.y,
     };
 
-    if (window->is_cursor_captured)
+    if (window->is_cursor_captured) {
       XWarpPointer(window->winx->display, None, window->window,
                    0, 0, 0, 0, window->width / 2, window->height / 2);
+      window->is_cursor_warping = true;
+    }
   } break;
 
   case EnterNotify: {
