@@ -37,6 +37,8 @@ typedef GLXContext (*glXCreateContextAttribsARBProc)(Display *, GLXFBConfig,
                                                      GLXContext, bool, const i32 *);
 
 WinxNative *winx_native_init(void) {
+  setlocale(LC_ALL, "");
+
   Display *display = XOpenDisplay(NULL);
 
   if (!display)
@@ -53,8 +55,6 @@ WinxNative *winx_native_init(void) {
   winx->is_randr_supported = XRRQueryExtension(display, &event_base, &error_base);
 
   XkbSetDetectableAutoRepeat(winx->display, true, NULL);
-
-  setlocale(LC_ALL, "");
 
   return winx;
 }

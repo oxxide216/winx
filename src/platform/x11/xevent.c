@@ -36,29 +36,30 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
     KeySym keysym;
 
     if (x_event.type == KeyPress) {
-      char key_name[4] = {0};
+      char key_name[5] = {0};
       x_event.xkey.state &= ~ControlMask;
 
       Status status;
       Xutf8LookupString(window->ic, &x_event.xkey, key_name,
-                        ARRAY_LEN(key_name), &keysym, &status);
+                        ARRAY_LEN(key_name) - 1, &keysym, &status);
 
-      if (status == XLookupChars || status == XLookupBoth)
-        window->last_char = *(WChar *) key_name;
+      if (status == XLookupChars || status == XLookupBoth) {
+        mbstowcs((wchar_t *) &window->last_char, key_name, 1);
 
-      switch (window->last_char) {
-      case 32525:   // Enter
-      case 32521:   // Tab
-      case 32520:   // Backspace
-      case 32639:   // Delete
-      case 32539: { // Escape
-        window->last_char = 0;
-      } break;
-
-      default: {
-        if (!iswprint(window->last_char))
+        switch (window->last_char) {
+        case 32525:   // Enter
+        case 32521:   // Tab
+        case 32520:   // Backspace
+        case 32639:   // Delete
+        case 32539: { // Escape
           window->last_char = 0;
-      } break;
+        } break;
+
+        default: {
+          if (!iswprint(window->last_char))
+            window->last_char = 0;
+        } break;
+        }
       }
     } else {
       keysym = XLookupKeysym(&x_event.xkey, 0);
