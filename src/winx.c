@@ -38,6 +38,7 @@ WinxWindow *winx_init_window(Winx *winx, Str name,
   window->time = 0.0;
   window->delta_time = 0.0;
   window->fps = 0.0;
+  window->target_fps = 0.0;
   window->native = native;
 
   return window;

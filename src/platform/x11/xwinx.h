@@ -38,7 +38,7 @@ struct WinxNativeWindow {
   XEvent            prev_x_event;
   u64               is_key_pressed[WinxKeyCodeCount];
   u32               last_char;
-  suseconds_t       start_usecs;
+  time_t            start_nsecs;
   bool              is_cursor_captured;
   bool              is_cursor_warping;
 };

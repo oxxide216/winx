@@ -173,9 +173,9 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
                          XNClientWindow, window->window, XNFocusWindow, window->window, NULL);
   XSetICFocus(window->ic);
 
-  struct timeval current_time;
-  gettimeofday(&current_time, NULL);
-  window->start_usecs = current_time.tv_sec * 1000000 + current_time.tv_usec;
+  struct timespec current_time;
+  clock_gettime(CLOCK_REALTIME, &current_time);
+  window->start_nsecs = current_time.tv_sec * 1000000000 + current_time.tv_nsec;
 
   return window;
 }
@@ -259,10 +259,10 @@ void winx_native_set_capture_cursor(WinxNativeWindow *window, bool value) {
 }
 
 f32 winx_native_get_time(WinxNativeWindow *window) {
-  struct timeval current_time;
-  gettimeofday(&current_time, NULL);
-  u64 current_usecs = current_time.tv_sec * 1000000 + current_time.tv_usec;
-  return (f32) (current_usecs - window->start_usecs) / 1000000;
+  struct timespec current_time;
+  clock_gettime(CLOCK_REALTIME, &current_time);
+  u64 current_nsecs = current_time.tv_sec * 1000000000 + current_time.tv_nsec;
+  return (f32) (current_nsecs - window->start_nsecs) / 1000000000.0;
 }
 
 void winx_native_draw(WinxNativeWindow *window, u32 width, u32 height) {
