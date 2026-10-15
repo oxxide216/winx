@@ -2,7 +2,8 @@
 #define KEY_CODE_H
 
 typedef enum {
-  WinxKeyCodeEscape = 0,
+  WinxKeyCodeUnknown = 0,
+  WinxKeyCodeEscape,
   WinxKeyCodeTab,
   WinxKeyCodeLeftShift,
   WinxKeyCodeRightShift,

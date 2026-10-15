@@ -145,6 +145,6 @@ WinxKeyCode keysym_to_key_code(KeySym keysym) {
   case 0xffea: return WinxKeyCodeRightAlt;
   case 0xffec: return WinxKeyCodeRightSuper;
   case 0xff67: return WinxKeyCodeMenu;
-  default:     return 0;
+  default:     return WinxKeyCodeUnknown;
   }
 }

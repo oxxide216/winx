@@ -121,6 +121,6 @@ WinxKeyCode virtual_key_to_key_code(WPARAM virtual_key) {
   case VK_RMENU:      return WinxKeyCodeRightAlt;
   case VK_RWIN:       return WinxKeyCodeRightSuper;
   // WinxKeyCodeMenu not found
-  default:            return 0;
+  default:            return WinxKeyCodeUnknown;
   }
 }
