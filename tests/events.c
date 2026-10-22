@@ -37,6 +37,21 @@ i32 main(void) {
       is_running = event.kind != WinxEventKindQuit;
       if (!is_running)
         break;
+
+      if (event.kind == WinxEventKindKeyPress) {
+        if (event.as.key.key_code == WinxKeyCodeC) {
+          winx_set_clipboard_content(window, event_names[event.kind],
+                                     strlen(event_names[event.kind]));
+        }
+        else if (event.as.key.key_code == WinxKeyCodeP) {
+          u64 len;
+          char *pasted = winx_get_clipboard_content(window, &len);
+          if (pasted) {
+            printf("%.*s\n", (i32) len, pasted);
+            free(pasted);
+          }
+        }
+      }
     }
 
     winx_draw(window);

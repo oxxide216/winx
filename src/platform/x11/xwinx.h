@@ -14,7 +14,14 @@
 struct WinxNative {
   Display     *display;
   i32          screen;
-  Atom         wm_delete_window;
+  Atom         wm_delete_window_atom;
+  // Begin atoms for clipboard interaction
+  Atom         selection_atom;
+  Atom         utf8_atom;
+  Atom         xsel_data_atom;
+  Atom         targets_atom;
+  Atom         text_atom;
+  // End atoms for clipboard interaction
   XIM          im;
   GLXFBConfig *fbc;
   GLXFBConfig  best_fbc;

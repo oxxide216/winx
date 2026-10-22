@@ -38,6 +38,8 @@ u32        *winx_get_framebuffer(WinxWindow *window);
 void        winx_make_context_current(WinxWindow *window);
 f32         winx_get_refresh_rate(WinxWindow *window);
 void        winx_set_capture_cursor(WinxWindow *window, bool value);
+char       *winx_get_clipboard_content(WinxWindow *window, u64 *len);
+void        winx_set_clipboard_content(WinxWindow *window, char *content, u64 len);
 void        winx_draw(WinxWindow *window);
 void        winx_destroy_window(WinxWindow *window);
 void        winx_cleanup(Winx *winx);
