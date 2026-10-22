@@ -213,6 +213,35 @@ void winx_native_set_capture_cursor(WinxNativeWindow *window, bool value) {
     ReleaseCapture();
 }
 
+char *winx_native_get_clipboard_content(WinxNativeWindow *window, u64 *len) {
+  (void) window;
+
+  OpenClipboard(NULL);
+  HANDLE handle = GetClipboardData(CF_TEXT);
+  char *temp = GlobalLock(handle);
+  *len = strlen(temp);
+  char *result = malloc(*len);
+  memcpy(result, temp, *len);
+  GlobalUnlock(handle);
+  CloseClipboard();
+
+  return result;
+}
+
+void winx_native_set_clipboard_content(WinxNativeWindow *window, char *content, u64 len) {
+  (void) window;
+
+  OpenClipboard(NULL);
+  EmptyClipboard();
+  HGLOBAL global = GlobalAlloc(GMEM_MOVEABLE, len + 1);
+  char *data = GlobalLock(global);
+  memcpy(data, content, len);
+  data[len] = '\0';
+  GlobalUnlock(global);
+  SetClipboardData(CF_TEXT, global);
+  CloseClipboard();
+}
+
 f32 winx_native_get_time(WinxNativeWindow *window) {
   return (f32) (timeGetTime() - window->start_millis) / 1000.0;
 }
