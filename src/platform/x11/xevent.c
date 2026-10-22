@@ -141,7 +141,7 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
   } break;
 
   case ClientMessage: {
-    if (x_event.xclient.data.l[0] == (i64) window->winx->wm_delete_window)
+    if (x_event.xclient.data.l[0] == (i64) window->winx->wm_delete_window_atom)
       winx_event.kind = WinxEventKindQuit;
   } break;
   }
