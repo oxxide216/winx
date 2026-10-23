@@ -66,8 +66,9 @@ WinxNative *winx_native_init(void) {
 
 static XVisualInfo *winx_get_visual_info(WinxNative *winx, WinxGraphicsMode graphics_mode) {
   if (graphics_mode == WinxGraphicsModeFramebuffer || graphics_mode == WinxGraphicsModeVulkan) {
-    i32 num_screens = 0;
-    return XGetVisualInfo(winx->display, 0, NULL, &num_screens);
+    XVisualInfo *result = malloc(sizeof(*result));
+    XMatchVisualInfo(winx->display, winx->screen, 32, TrueColor, result);
+    return result;
   } else if (graphics_mode == WinxGraphicsModeOpenGL) {
     if (winx->fbc)
       return glXGetVisualFromFBConfig(winx->display, winx->best_fbc);
@@ -383,7 +384,11 @@ void winx_native_destroy_window(WinxNativeWindow *window) {
     glXDestroyContext(window->winx->display, window->gl_context);
   }
 
-  XFree(window->visual_info);
+  if (window->graphics_mode == WinxGraphicsModeFramebuffer ||
+      window->graphics_mode == WinxGraphicsModeVulkan)
+    free(window->visual_info);
+  else if (window->graphics_mode == WinxGraphicsModeOpenGL)
+    XFree(window->visual_info);
   XFreeGC(window->winx->display, window->graphic_context);
   XUnmapWindow(window->winx->display, window->window);
   XDestroyWindow(window->winx->display, window->window);
