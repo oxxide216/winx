@@ -1,7 +1,9 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <X11/Xatom.h>
 #include <string.h>
 #include <wctype.h>
+#include <limits.h>
 
 #include "xwinx.h"
 #include "xkey_code.h"
@@ -143,6 +145,79 @@ WinxEvent winx_native_get_event(WinxNativeWindow *window, bool wait) {
   case ClientMessage: {
     if (x_event.xclient.data.l[0] == (i64) window->winx->wm_delete_window_atom)
       winx_event.kind = WinxEventKindQuit;
+  } break;
+
+  case SelectionRequest: {
+    XSelectionRequestEvent request = x_event.xselectionrequest;
+    if (XGetSelectionOwner(window->winx->display,
+                           window->winx->selection_atom) == window->window &&
+        request.selection == window->winx->selection_atom) {
+      if (request.target == window->winx->targets_atom && request.property != None)
+        XChangeProperty(request.display, request.requestor, request.property,
+                        XA_ATOM, 32, PropModeReplace,
+                        (u8 *) &window->winx->utf8_atom, 1);
+      else if ((request.target == XA_STRING ||
+                request.target == window->winx->utf8_atom) &&
+               request.property != None &&
+               window->clipboard_content)
+        XChangeProperty(request.display, request.requestor, request.property,
+                        request.target, 8, PropModeReplace,
+                        (u8 *) window->clipboard_content,
+                        window->clipboard_content_len);
+
+      XSelectionEvent send_event;
+      send_event.type = SelectionNotify;
+      send_event.serial = request.serial;
+      send_event.send_event = request.send_event;
+      send_event.display = request.display;
+      send_event.requestor = request.requestor;
+      send_event.selection = request.selection;
+      send_event.target = request.target;
+      send_event.property = request.property;
+      send_event.time = request.time;
+      XSendEvent(window->winx->display, request.requestor, 0, 0, (XEvent *) &send_event);
+    }
+  } break;
+
+  case SelectionNotify: {
+    XSelectionEvent selection = x_event.xselection;
+    if (selection.property != None) {
+      Atom actual_type;
+      int actual_format;
+      u64 bytes_after;
+      u8 *data;
+      u64 len;
+      XGetWindowProperty(window->winx->display, window->window,
+                         window->winx->selection_atom, 0, LONG_MAX,
+                         false, AnyPropertyType, &actual_type, &actual_format,
+                         &len, &bytes_after, &data);
+
+      if (selection.target == window->winx->targets_atom) {
+        Atom* list = (Atom*) data;
+        for (unsigned long i = 0; i < len; i++) {
+          if (list[i] == XA_STRING) {
+            window->selection_target = XA_STRING;
+          } else if (list[i] == window->winx->utf8_atom) {
+            window->selection_target = window->winx->utf8_atom;
+            break;
+          }
+        }
+
+        if (window->selection_target != None)
+          XConvertSelection(window->winx->display, window->winx->selection_atom,
+                            window->selection_target, window->winx->selection_atom,
+                            window->window, CurrentTime);
+      } else if (selection.target == window->selection_target) {
+        char *_data = malloc(len);
+        memcpy(_data, data, len);
+
+        winx_event.kind = WinxEventKindClipboardData;
+        winx_event.as.clipboard_data = (WinxEventClipboardData) { _data, len };
+      }
+
+      if (data)
+        XFree(data);
+    }
   } break;
   }
 

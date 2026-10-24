@@ -51,9 +51,7 @@ WinxNative *winx_native_init(void) {
   winx->wm_delete_window_atom = XInternAtom(winx->display, "WM_DELETE_WINDOW", false);
   winx->selection_atom = XInternAtom(winx->display, "CLIPBOARD", false);
   winx->utf8_atom = XInternAtom(winx->display, "UTF8_STRING", true);
-  winx->xsel_data_atom = XInternAtom(winx->display, "XSEL_DATA", false);
   winx->targets_atom = XInternAtom(winx->display, "TARGETS", false);
-  winx->text_atom = XInternAtom(winx->display, "TEXT", false);
   winx->im = XOpenIM(winx->display, NULL, NULL, NULL);
   winx->is_shm_supported = XShmQueryExtension(display);
   i32 event_base, error_base;
@@ -128,6 +126,7 @@ WinxNativeWindow *winx_native_init_window(WinxNative *winx, Str name,
   window->winx = winx;
   window->graphics_mode = graphics_mode;
   window->visual_info = winx_get_visual_info(winx, graphics_mode);
+  window->selection_target = None;
 
   Window parent_window;
   if (parent)
@@ -264,96 +263,24 @@ void winx_native_set_capture_cursor(WinxNativeWindow *window, bool value) {
     XFixesShowCursor(window->winx->display, window->window);
 }
 
-// This and the next functions were taken from https://github.com/exebook/x11clipboard
-char *winx_native_get_clipboard_content(WinxNativeWindow *window, u64 *len) {
-  char *result = NULL;
-
-	XConvertSelection(window->winx->display, window->winx->selection_atom, 31,
-                    window->winx->xsel_data_atom, window->window, CurrentTime);
-	XSync(window->winx->display, 0);
-
-  XEvent event;
-	XNextEvent(window->winx->display, &event);
-	switch(event.type) {
-  case SelectionNotify:
-		if(event.xselection.selection != window->winx->selection_atom)
-      break;
-
-		if(event.xselection.property) {
-      Atom target;
-      char *temp;
-      i32 unused0;
-      u64 unused1;
-			XGetWindowProperty(event.xselection.display, event.xselection.requestor,
-                         event.xselection.property, 0, ~0, false, AnyPropertyType,
-                         &target, &unused0, len, &unused1, (u8 **) &temp);
-			if(target == window->winx->utf8_atom || target == 31) {
-        result = strndup(temp, *len);
-				XFree(temp);
-			}
-			XDeleteProperty(event.xselection.display,
-                      event.xselection.requestor,
-                      event.xselection.property);
-		}
-	}
-
-  return result;
+void winx_native_get_clipboard_content(WinxNativeWindow *window) {
+  XConvertSelection(window->winx->display,
+                    window->winx->selection_atom,
+                    window->winx->targets_atom,
+                    window->winx->selection_atom,
+                    window->window, CurrentTime);
 }
 
 void winx_native_set_clipboard_content(WinxNativeWindow *window, char *content, u64 len) {
-	XSetSelectionOwner(window->winx->display,
+  XSetSelectionOwner(window->winx->display,
                      window->winx->selection_atom,
-                     window->window, 0);
-	if (XGetSelectionOwner(window->winx->display,
-                         window->winx->selection_atom) != window->window)
-    return;
+                     window->window, CurrentTime);
 
-	while (true) {
-    XEvent event;
-		XNextEvent(window->winx->display, &event);
-		switch (event.type) {
-    case SelectionRequest: {
-			if (event.xselectionrequest.selection != window->winx->selection_atom)
-        break;
-
-			XSelectionRequestEvent *sel_req_event = &event.xselectionrequest;
-			XSelectionEvent sel_event = {0};
-			sel_event.type = SelectionNotify;
-      sel_event.display = sel_req_event->display;
-      sel_event.requestor = sel_req_event->requestor;
-      sel_event.selection = sel_req_event->selection;
-      sel_event.time = sel_req_event->time;
-      sel_event.target = sel_req_event->target;
-      sel_event.property = sel_req_event->property;
-
-			int result = 0;
-			if (sel_event.target == window->winx->targets_atom)
-        result = XChangeProperty(sel_event.display, sel_event.requestor,
-                                 sel_event.property, 4, 32, PropModeReplace,
-                                 (u8 *) &window->winx->utf8_atom, 1);
-			else if (sel_event.target == 31 || sel_event.target == window->winx->text_atom)
-				result = XChangeProperty(sel_event.display, sel_event.requestor,
-                                 sel_event.property, 31, 8,
-                                 PropModeReplace, (u8 *) content, len);
-			else if (sel_event.target == window->winx->utf8_atom)
-				result = XChangeProperty(sel_event.display,
-                               sel_event.requestor,
-                               sel_event.property, window->winx->utf8_atom, 8,
-                                 PropModeReplace, (u8 *) content, len);
-			else
-        sel_event.property = None;
-
-			if ((result & 2) == 0)
-        XSendEvent(window->winx->display,
-                   sel_event.requestor,
-                   0, 0, (XEvent *) &sel_event);
-    } break;
-
-    case SelectionClear: {
-      return;
-    }
-		}
-	}
+  if (window->clipboard_content)
+    free(window->clipboard_content);
+  window->clipboard_content = malloc(len);
+  memcpy(window->clipboard_content, content, len);
+  window->clipboard_content_len = len;
 }
 
 f32 winx_native_get_time(WinxNativeWindow *window) {
@@ -392,6 +319,9 @@ void winx_native_destroy_window(WinxNativeWindow *window) {
   XFreeGC(window->winx->display, window->graphic_context);
   XUnmapWindow(window->winx->display, window->window);
   XDestroyWindow(window->winx->display, window->window);
+
+  if (window->clipboard_content)
+    free(window->clipboard_content);
 }
 
 void winx_native_cleanup(WinxNative *winx) {

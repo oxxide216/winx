@@ -60,8 +60,8 @@ void winx_set_capture_cursor(WinxWindow *window, bool value) {
   winx_native_set_capture_cursor(window->native, value);
 }
 
-char *winx_get_clipboard_content(WinxWindow *window, u64 *len) {
-  return winx_native_get_clipboard_content(window->native, len);
+void winx_get_clipboard_content(WinxWindow *window) {
+  winx_native_get_clipboard_content(window->native);
 }
 
 void winx_set_clipboard_content(WinxWindow *window, char *content, u64 len) {

@@ -17,6 +17,7 @@ typedef enum {
   WinxEventKindFocus,
   WinxEventKindUnfocus,
   WinxEventKindResize,
+  WinxEventKindClipboardData,
   WinxEventKindQuit,
 } WinxEventKind;
 
@@ -53,12 +54,18 @@ typedef struct {
   u32 width, height;
 } WinxEventResize;
 
+typedef struct {
+  char *data;
+  u64   len;
+} WinxEventClipboardData;
+
 typedef union {
-  WinxEventKey       key;
-  WinxEventChar      _char;
-  WinxEventButton    button;
-  WinxEventMouseMove mouse_move;
-  WinxEventResize    resize;
+  WinxEventKey           key;
+  WinxEventChar          _char;
+  WinxEventButton        button;
+  WinxEventMouseMove     mouse_move;
+  WinxEventResize        resize;
+  WinxEventClipboardData clipboard_data;
 } WinxEventAs;
 
 typedef struct {
