@@ -77,7 +77,8 @@ WinxKeyCode keysym_to_key_code(KeySym keysym) {
   case 0x005d: return WinxKeyCodeRightBracket;
   case 0xff1b: return WinxKeyCodeEscape;
   case 0xff0d: return WinxKeyCodeEnter;
-  case 0xff09: return WinxKeyCodeTab;
+  case 0xff09:
+  case 0xfe20: return WinxKeyCodeTab;
   case 0xff08: return WinxKeyCodeBackspace;
   case 0xff63: return WinxKeyCodeInsert;
   case 0xffff: return WinxKeyCodeDelete;
